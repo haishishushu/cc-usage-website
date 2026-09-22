@@ -1,0 +1,27 @@
+# 依赖与包管理缓存
+node_modules/
+.pnpm-store/
+
+# 构建产物与缓存（vite 产物、tsc -b 增量信息）
+dist/
+build/
+.vite/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# 本地配置、日志与密钥
+*.local
+*.log
+.env
+.env.*
+!.env.example
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 本地调试与验收产物
+/.playwright-cli/
+/playwright-report/
+/test-results/

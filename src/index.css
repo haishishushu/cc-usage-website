@@ -1,0 +1,361 @@
+@import "tailwindcss";
+
+/* 字体离线分发，与 ai-usage-island 前端同一套文件，不依赖运行时联网。 */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono-Variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+/* 深色主题通过根元素 .dark 切换，与 island 前端同一机制。 */
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   设计变量 —— 逐项取自 prd/website.pen 双主题画布 / ai-usage-island index.css。
+   深色是逐项独立取值，不是简单反色，勿自行推导。
+--------------------------------------------------------------------------- */
+:root {
+  /* 表面 */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f7f7f8;
+  --surface-3: #f2f2f3;
+  /* 文字 */
+  --text-primary: #111111;
+  --text-secondary: #8a8a8a;
+  --text-muted: #ababab;
+  /* 主行动色与语义色 */
+  --accent: #2563eb;
+  --accent-soft: #eaf0fe;
+  --green: #06c167;
+  --green-soft: #e6f7ee;
+  --green-text: #06834a;
+  --amber: #d98500;
+  --amber-soft: #fdf3e3;
+  --danger: #dc2626;
+  --purple-soft: #f1ecfe;
+  --purple-text: #6d40e0;
+  --neutral-soft: #f0f0f1;
+  /* 平台标识 */
+  --logo-claude: #d97757;
+  --logo-codex: #0d0d0d;
+  --logo-gemini: #1a73e8;
+  --logo-grok: #111111;
+  /* 边框与轨道 */
+  --border: #e8e8e8;
+  --border-strong: #d6d6d6;
+  --track: #e9ebef;
+  /* 趋势图系列色（与 island 图表色一致） */
+  --chart-grid: #ededed;
+  --chart-input: #2563eb;
+  --chart-output: #c2389b;
+  --chart-write: #d98500;
+  --chart-read: #059669;
+  --chart-cost: #dc2626;
+  /* 刷新柔光：白底用深色柔影 */
+  --refresh-shimmer: rgb(15 15 20 / 0.13);
+}
+
+.dark {
+  --bg: #0d0d0d;
+  --surface: #181818;
+  --surface-2: #1f1f1f;
+  --surface-3: #242424;
+  --text-primary: #f5f5f5;
+  --text-secondary: #8e8e8e;
+  --text-muted: #6b6b6b;
+  --accent: #4f86f7;
+  --accent-soft: #16263f;
+  --green: #28d07e;
+  --green-soft: #12301f;
+  --green-text: #3adb8b;
+  --amber: #f0a93b;
+  --amber-soft: #3a2a0f;
+  --danger: #f26d6d;
+  --purple-soft: #2a2140;
+  --purple-text: #b9a0ff;
+  --neutral-soft: #262626;
+  --logo-claude: #e08a6d;
+  --logo-codex: #f0f0f0;
+  --logo-gemini: #7ca9f5;
+  --logo-grok: #f0f0f0;
+  --border: #292929;
+  --border-strong: #3a3a3a;
+  --track: #303030;
+  --chart-grid: #262626;
+  --chart-input: #2563eb;
+  --chart-output: #be3498;
+  --chart-write: #ca7700;
+  --chart-read: #00b057;
+  --chart-cost: #d82022;
+  /* 深色反过来用白色柔光 */
+  --refresh-shimmer: rgb(255 255 255 / 0.11);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-green-text: var(--green-text);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-danger: var(--danger);
+  --color-purple-soft: var(--purple-soft);
+  --color-purple-text: var(--purple-text);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-logo-claude: var(--logo-claude);
+  --color-logo-codex: var(--logo-codex);
+  --color-logo-gemini: var(--logo-gemini);
+  --color-logo-grok: var(--logo-grok);
+
+  --color-border-base: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-track: var(--track);
+
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-input: var(--chart-input);
+  --color-chart-output: var(--chart-output);
+  --color-chart-write: var(--chart-write);
+  --color-chart-read: var(--chart-read);
+  --color-chart-cost: var(--chart-cost);
+
+  /* 圆角：卡片 14 / 灵动岛 18 / 按钮 8（同 island） */
+  --radius-card: 14px;
+  --radius-island: 18px;
+  --radius-btn: 8px;
+
+  --font-ui: "Inter", "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-ui);
+    background: var(--bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* 所有数字使用等宽数字，刷新时不抖动（同 island） */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  .shadow-card {
+    box-shadow: 0 10px 30px -6px rgb(0 0 0 / 0.12);
+  }
+  .shadow-island {
+    box-shadow: 0 14px 36px -6px rgb(0 0 0 / 0.16);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   动效体系 —— 与 ai-usage-island 前端 index.css 同源：
+   同一节奏（120ms 反馈 / 180ms 切换 / 420ms 水位 / 1100ms 柔光）、同一缓动。
+--------------------------------------------------------------------------- */
+:root {
+  --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-feedback: 120ms;
+  --motion-switch: 180ms;
+}
+
+@keyframes dock-token-pulse {
+  0% {
+    filter: brightness(1);
+  }
+  42% {
+    filter: brightness(1.65);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+.dock-token-pulse {
+  animation: dock-token-pulse 300ms ease-out;
+}
+
+@keyframes dock-contract-horizontal {
+  from {
+    opacity: 0.55;
+    transform: scaleX(1.32);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+@keyframes dock-contract-vertical {
+  from {
+    opacity: 0.55;
+    transform: scaleY(1.32);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+.dock-contract-horizontal {
+  animation: dock-contract-horizontal 180ms var(--motion-ease);
+}
+.dock-contract-vertical {
+  animation: dock-contract-vertical 180ms var(--motion-ease);
+}
+
+/* 刷新柔光：一道斜向柔光掠过整卡（island 原版结构：veil 裁剪层 + 45% 宽光带）。 */
+@keyframes island-refresh-shimmer {
+  from {
+    transform: translateX(-130%) skewX(-18deg);
+    opacity: 0;
+  }
+  16% {
+    opacity: 1;
+  }
+  84% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(250%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+.island-refresh-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.island-refresh-shimmer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent 0%, var(--refresh-shimmer) 36%, var(--refresh-shimmer) 64%, transparent 100%);
+  animation: island-refresh-shimmer 1100ms linear infinite;
+  will-change: transform, opacity;
+}
+
+/* 滚动自动淡入：section 进入视口后上浮显现。 */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 600ms var(--motion-ease),
+    transform 600ms var(--motion-ease);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-token-pulse,
+  .dock-contract-horizontal,
+  .dock-contract-vertical {
+    animation: none;
+  }
+  .island-refresh-shimmer {
+    animation: none;
+    transform: none;
+    width: 100%;
+    background: var(--refresh-shimmer);
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 主题只渐变静态背景，避免全树重绘。 */
+.theme-transition :where(.bg-bg, .bg-surface, .bg-surface-2, .bg-surface-3) {
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+/* 按钮/开关/水位的统一动效（island 同款节奏）。 */
+.motion-button {
+  transition:
+    transform 120ms var(--motion-ease),
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    filter 120ms ease;
+}
+.motion-button:not(:disabled):hover {
+  filter: brightness(0.96);
+}
+.dark .motion-button:not(:disabled):hover {
+  filter: brightness(1.12);
+}
+.motion-button:not(:disabled):active {
+  transform: translateY(1px);
+  transition-duration: 80ms;
+}
+.motion-quota-bar {
+  transition:
+    width 420ms var(--motion-ease),
+    background-color 420ms ease;
+}
+.motion-toggle {
+  transition: background-color 160ms ease;
+}
+.motion-toggle-thumb {
+  transition: transform 160ms var(--motion-ease);
+}
+.motion-indicator {
+  transition:
+    transform 180ms var(--motion-ease),
+    width 180ms var(--motion-ease),
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0ms !important;
+  }
+}
