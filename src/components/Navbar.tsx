@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 
 /** 源码仓库（GitHub，与应用「关于」页同源） */
 export const REPO_URL = "https://github.com/haishishushu/cc-usage"
-export const RELEASES_URL = `${REPO_URL}/releases`
+export const RELEASES_URL = `${REPO_URL}/releases/tag/v0.1.0`
 
 export function Navbar() {
   const { theme, toggle } = useTheme()

@@ -3,10 +3,19 @@ import { Link } from "react-router"
 import { GhostButton, PrimaryButton } from "@/components/ui"
 import { RELEASES_URL } from "@/components/Navbar"
 
+const DOWNLOAD_BASE_URL = "https://github.com/haishishushu/cc-usage/releases/download/v0.1.0"
+const DOWNLOAD_URLS = {
+  windows: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-Windows-x86_64-Setup.exe`,
+  macArm64: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-macOS-arm64.dmg`,
+  macX64: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-macOS-x86_64.dmg`,
+  linuxAppImage: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-Linux-x86_64.AppImage`,
+  linuxDeb: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-Linux-x86_64.deb`,
+} as const
+
 function InstallSteps() {
   const steps = [
-    { title: "下载安装包", desc: "点击上方「下载安装包」，约 8 MB，几秒完成。" },
-    { title: "运行安装向导", desc: "双击运行，中文 NSIS 向导一路下一步，WebView2 自动处理。" },
+    { title: "选择安装包", desc: "按你的操作系统与处理器架构，直接从 GitHub Releases 下载。" },
+    { title: "运行安装包", desc: "Windows 运行 EXE，macOS 打开 DMG，Linux 使用 AppImage 或 DEB。" },
     { title: "启动 CC Usage", desc: "从开始菜单或桌面启动，主面板与灵动岛即刻就位。" },
   ]
   return (
@@ -44,9 +53,9 @@ function Requirements() {
           <h3 className="text-[15px] font-bold text-text-primary">系统要求</h3>
           {[
             { icon: Monitor2, label: "Windows 10 及以上版本" },
-            { icon: Cpu2, label: "x64 架构处理器" },
-            { icon: Globe2, label: "WebView2 运行时（安装向导自动处理）" },
-            { icon: ShieldCheck, label: "无需管理员权限之外的额外依赖" },
+            { icon: Cpu2, label: "macOS · Apple Silicon 或 Intel" },
+            { icon: Globe2, label: "Linux x64 · AppImage 或 DEB" },
+            { icon: ShieldCheck, label: "安装包由 GitHub Actions 自动构建并发布" },
           ].map((r) => (
             <div key={r.label} className="flex items-center gap-2.5 text-[13px] text-text-secondary">
               <r.icon size={15} className="text-text-muted" />
@@ -58,8 +67,8 @@ function Requirements() {
           <h3 className="text-[15px] font-bold text-text-primary">版本信息</h3>
           {[
             ["版本号", "v0.1.0"],
-            ["发布日期", "2026-09-19"],
-            ["安装器", "NSIS · 中文向导"],
+            ["发布日期", "2026-09-22"],
+            ["安装包", "EXE · DMG · AppImage · DEB"],
             ["开源协议", "MIT"],
             ["获取历史版本", "GitHub Releases"],
           ].map(([k, v]) => (
@@ -107,7 +116,7 @@ export default function DownloadPage() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.5-6.3 4.5L8 13.8 2 9.2h7.6z" />
           </svg>
-          最新稳定版 v0.1.0 · 2026-09-19
+          最新稳定版 v0.1.0 · 2026-09-22
         </span>
         <h1 className="text-[40px] font-bold tracking-tight text-text-primary sm:text-[52px]">免费下载 CC Usage</h1>
         <p className="max-w-[640px] text-base leading-[1.8] text-text-secondary">
@@ -118,7 +127,7 @@ export default function DownloadPage() {
       <section className="flex flex-col gap-5 bg-bg px-6 lg:px-[200px]">
         <div className="grid gap-5 md:grid-cols-3">
           {/* Windows 主卡 */}
-          <div className="flex flex-col gap-4 rounded-card border-[1.5px] border-accent bg-surface p-[26px] shadow-card md:col-span-1">
+          <div className="flex min-w-0 flex-col gap-4 rounded-card border-[1.5px] border-accent bg-surface p-[26px] shadow-card md:col-span-1">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <span className="flex size-11 items-center justify-center rounded-[11px] bg-accent-soft text-accent">
@@ -132,17 +141,17 @@ export default function DownloadPage() {
               <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-white">推荐</span>
             </div>
             {[
-              { icon: Package, label: "安装包 CCUsage_0.1.0_x64-setup.exe" },
-              { icon: HardDrive, label: "约 8 MB · NSIS 中文安装向导" },
+              { icon: Package, label: "CC-Usage-v0.1.0-Windows-x86_64-Setup.exe" },
+              { icon: HardDrive, label: "约 3.8 MB · NSIS 中文安装向导" },
               { icon: ShieldCheck, label: "已内置 WebView2 引导，装完即用" },
             ].map((s) => (
               <div key={s.label} className="flex items-center gap-2 text-[13px] text-text-secondary">
                 <s.icon size={14} className="shrink-0 text-text-muted" />
-                <span className="tnum">{s.label}</span>
+                <span className="tnum min-w-0 break-all">{s.label}</span>
               </div>
             ))}
             <div className="mt-auto flex flex-col gap-2.5 pt-1">
-              <PrimaryButton href={RELEASES_URL} className="w-full justify-center px-0 py-3 text-sm">
+              <PrimaryButton href={DOWNLOAD_URLS.windows} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
                 下载安装包
               </PrimaryButton>
@@ -153,27 +162,51 @@ export default function DownloadPage() {
             </div>
           </div>
 
-          {/* macOS / Linux 敬请期待 */}
-          {[
-            { name: "macOS", icon: Laptop, note: "macOS / Linux 支持在路线图里，欢迎到 GitHub 提 Issue 催更。" },
-            { name: "Linux", icon: Terminal, note: "AppImage / deb 打包形式调研中，欢迎到 GitHub 提 Issue 催更。" },
-          ].map((p) => (
-            <div key={p.name} className="flex flex-col gap-4 rounded-card border border-border-base bg-surface-2 p-[26px]">
-              <div className="flex items-center gap-2.5">
-                <span className="flex size-11 items-center justify-center rounded-[11px] bg-neutral-soft text-text-muted">
-                  <p.icon size={22} />
-                </span>
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[17px] font-bold text-text-secondary">{p.name}</span>
-                  <span className="text-xs text-text-muted">规划中</span>
-                </div>
-              </div>
-              <p className="text-[13px] leading-[1.8] text-text-muted">{p.note}</p>
-              <span className="mt-auto flex w-full items-center justify-center rounded-btn bg-surface-3 py-3 text-sm font-semibold text-text-muted">
-                敬请期待
+          <div className="flex min-w-0 flex-col gap-4 rounded-card border border-border-base bg-surface-2 p-[26px]">
+            <div className="flex items-center gap-2.5">
+              <span className="flex size-11 items-center justify-center rounded-[11px] bg-neutral-soft text-text-muted">
+                <Laptop size={22} />
               </span>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[17px] font-bold text-text-primary">macOS</span>
+                <span className="text-xs text-text-secondary">Apple Silicon / Intel</span>
+              </div>
             </div>
-          ))}
+            <p className="text-[13px] leading-[1.8] text-text-secondary">DMG 安装包，请按 Mac 的处理器架构选择版本。</p>
+            <div className="mt-auto flex flex-col gap-2.5 pt-1">
+              <PrimaryButton href={DOWNLOAD_URLS.macArm64} className="w-full justify-center px-0 py-3 text-sm">
+                <Download size={16} />
+                Apple Silicon
+              </PrimaryButton>
+              <GhostButton href={DOWNLOAD_URLS.macX64} className="w-full justify-center px-0 py-3 text-sm">
+                <Download size={16} />
+                Intel
+              </GhostButton>
+            </div>
+          </div>
+
+          <div className="flex min-w-0 flex-col gap-4 rounded-card border border-border-base bg-surface-2 p-[26px]">
+            <div className="flex items-center gap-2.5">
+              <span className="flex size-11 items-center justify-center rounded-[11px] bg-neutral-soft text-text-muted">
+                <Terminal size={22} />
+              </span>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[17px] font-bold text-text-primary">Linux</span>
+                <span className="text-xs text-text-secondary">x64</span>
+              </div>
+            </div>
+            <p className="text-[13px] leading-[1.8] text-text-secondary">通用发行版推荐 AppImage，Debian / Ubuntu 可选择 DEB。</p>
+            <div className="mt-auto flex flex-col gap-2.5 pt-1">
+              <PrimaryButton href={DOWNLOAD_URLS.linuxAppImage} className="w-full justify-center px-0 py-3 text-sm">
+                <Download size={16} />
+                下载 AppImage
+              </PrimaryButton>
+              <GhostButton href={DOWNLOAD_URLS.linuxDeb} className="w-full justify-center px-0 py-3 text-sm">
+                <Download size={16} />
+                下载 DEB
+              </GhostButton>
+            </div>
+          </div>
         </div>
       </section>
 
