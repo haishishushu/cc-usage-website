@@ -1,7 +1,7 @@
 import { Link } from "react-router"
 import { MonitorCheck, ShieldCheck } from "lucide-react"
 import { AppLogo } from "@/components/Logo"
-import { REPO_URL } from "@/components/Navbar"
+import { REPO_URL } from "@/lib/version"
 
 const LINK_GROUPS: { title: string; links: { label: string; to: string; external?: boolean }[] }[] = [
   {

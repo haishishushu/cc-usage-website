@@ -1,6 +1,6 @@
 import { Bell, Github, History, Laptop, Plug, Terminal, FlaskConical, Plus, Sparkles, Wrench } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
-import { RELEASES_URL } from "@/components/Navbar"
+import { RELEASES_URL } from "@/lib/version"
 import { Chip } from "@/components/ui"
 
 const FEATURES: string[] = [

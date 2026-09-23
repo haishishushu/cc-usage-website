@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router"
+import { Route, Routes, Link, useLocation } from "react-router"
 import { useEffect } from "react"
 import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
@@ -49,9 +49,9 @@ function NotFound() {
     <section className="flex flex-col items-center gap-4 bg-bg px-6 py-32 text-center">
       <h1 className="text-5xl font-bold tracking-tight text-text-primary">404</h1>
       <p className="text-text-secondary">页面不存在或已被移动。</p>
-      <a href="/" className="text-sm font-semibold text-accent hover:underline">
+      <Link to="/" className="text-sm font-semibold text-accent hover:underline">
         返回首页
-      </a>
+      </Link>
     </section>
   )
 }

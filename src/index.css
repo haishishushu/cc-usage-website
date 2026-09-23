@@ -245,6 +245,29 @@
     opacity: 0;
   }
 }
+
+/* 首屏自动演示的「双击涟漪」：从胶囊中心扩散一圈后消散（hero 剧本专用）。 */
+@keyframes hero-ripple {
+  from {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0.55;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1.9);
+    opacity: 0;
+  }
+}
+.hero-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 74px;
+  height: 74px;
+  border-radius: 9999px;
+  border: 2px solid var(--accent);
+  pointer-events: none;
+  animation: hero-ripple 700ms var(--motion-ease) forwards;
+}
 .island-refresh-veil {
   position: absolute;
   inset: 0;

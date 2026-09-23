@@ -1,15 +1,14 @@
 import { AppWindow, Download, Github, HardDrive, Laptop, Package, ShieldCheck, Terminal } from "lucide-react"
 import { Link } from "react-router"
 import { GhostButton, PrimaryButton } from "@/components/ui"
-import { RELEASES_URL } from "@/components/Navbar"
+import { APP_VERSION, DOWNLOAD_BASE_URL, RELEASE_TAG, RELEASES_URL } from "@/lib/version"
 
-const DOWNLOAD_BASE_URL = "https://github.com/haishishushu/cc-usage/releases/download/v0.1.0"
 const DOWNLOAD_URLS = {
-  windows: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-Windows-x86_64-Setup.exe`,
-  macArm64: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-macOS-arm64.dmg`,
-  macX64: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-macOS-x86_64.dmg`,
-  linuxAppImage: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-Linux-x86_64.AppImage`,
-  linuxDeb: `${DOWNLOAD_BASE_URL}/CC-Usage-v0.1.0-Linux-x86_64.deb`,
+  windows: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-Windows-x86_64-Setup.exe`,
+  macArm64: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-macOS-arm64.dmg`,
+  macX64: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-macOS-x86_64.dmg`,
+  linuxAppImage: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-Linux-x86_64.AppImage`,
+  linuxDeb: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-Linux-x86_64.deb`,
 } as const
 
 function InstallSteps() {
@@ -66,7 +65,7 @@ function Requirements() {
         <div className="flex flex-col gap-3.5 rounded-card border border-border-base bg-surface-2 p-[22px]">
           <h3 className="text-[15px] font-bold text-text-primary">版本信息</h3>
           {[
-            ["版本号", "v0.1.0"],
+            ["版本号", RELEASE_TAG],
             ["发布日期", "2026-09-22"],
             ["安装包", "EXE · DMG · AppImage · DEB"],
             ["开源协议", "MIT"],
@@ -116,7 +115,7 @@ export default function DownloadPage() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.5-6.3 4.5L8 13.8 2 9.2h7.6z" />
           </svg>
-          最新稳定版 v0.1.0 · 2026-09-22
+          最新稳定版 {RELEASE_TAG}（{APP_VERSION}） · 2026-09-22
         </span>
         <h1 className="text-[40px] font-bold tracking-tight text-text-primary sm:text-[52px]">免费下载 CC Usage</h1>
         <p className="max-w-[640px] text-base leading-[1.8] text-text-secondary">
@@ -141,7 +140,7 @@ export default function DownloadPage() {
               <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-white">推荐</span>
             </div>
             {[
-              { icon: Package, label: "CC-Usage-v0.1.0-Windows-x86_64-Setup.exe" },
+              { icon: Package, label: `CC-Usage-${RELEASE_TAG}-Windows-x86_64-Setup.exe` },
               { icon: HardDrive, label: "约 3.8 MB · NSIS 中文安装向导" },
               { icon: ShieldCheck, label: "已内置 WebView2 引导，装完即用" },
             ].map((s) => (

@@ -41,20 +41,21 @@ import { SectionHeading, PrimaryButton, GhostButton, Chip } from "@/components/u
 import { PlatformLogo } from "@/components/Logo"
 import { PanelMock } from "@/components/mock/PanelMock"
 import { IslandInteractive, IslandDock } from "@/components/mock/IslandMock"
+import { HeroDemo } from "@/components/mock/HeroDemo"
 import { TrendChartMock, RequestLogMock } from "@/components/mock/ChartMock"
 import { CLAUDE_QUOTAS, CODEX_QUOTAS } from "@/mock/data"
-import { RELEASES_URL } from "@/components/Navbar"
+import { RELEASE_TAG, RELEASES_URL } from "@/lib/version"
 import { PLATFORMS } from "@/lib/platforms"
 
 function Hero() {
   return (
-    <section className="flex flex-col items-center gap-6 bg-bg px-6 pb-[72px] pt-[76px] text-center">
+    <section className="flex flex-col items-center gap-6 bg-bg px-6 pb-[64px] pt-[76px] text-center">
       <Link
         to="/changelog"
         className="flex items-center gap-2 rounded-full bg-accent-soft px-3.5 py-1.5 text-[13px] font-medium text-accent transition-opacity hover:opacity-90"
       >
         <Sparkles size={14} />
-        v0.1.0 首个公开版本已发布
+        {RELEASE_TAG} 首个公开版本已发布
       </Link>
       <h1 className="text-[44px] font-bold leading-[1.2] tracking-tight text-text-primary sm:text-[62px]">
         让 AI 用量，一眼看得见
@@ -72,7 +73,11 @@ function Hero() {
           查看文档
         </GhostButton>
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-[18px] text-[13px] text-text-muted">
+      {/* 首屏自动演示：零操作看懂灵动岛的完整交互循环 */}
+      <div className="flex w-full justify-center pt-6">
+        <HeroDemo />
+      </div>
+      <div className="flex flex-wrap items-center justify-center gap-[18px] pt-2 text-[13px] text-text-muted">
         {[
           { icon: Monitor, label: "支持 Windows 10+" },
           { icon: Database, label: "本地 SQLite 存储" },

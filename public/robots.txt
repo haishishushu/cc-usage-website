@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://haishishushu.github.io/cc-usage-website/sitemap.xml
