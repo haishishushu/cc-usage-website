@@ -1,4 +1,5 @@
 import { Mail, Plus } from "lucide-react"
+import { usePageTitle } from "@/lib/usePageTitle"
 
 const GOLD_SLOTS = [1, 2, 3]
 const SMALL_SLOTS = [1, 2, 3, 4, 5]
@@ -13,6 +14,7 @@ function TierHead({ label }: { label: string }) {
 }
 
 export default function SponsorsPage() {
+  usePageTitle("赞助商 — CC Usage")
   return (
     <>
       <section className="flex flex-col items-center gap-3.5 bg-bg px-6 pb-[52px] pt-16 text-center">

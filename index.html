@@ -26,6 +26,52 @@
       content="常驻灵动岛 + 完整主面板，统一查看八个 AI 编程平台的额度、Token 与请求日志，数据全部留在本机。"
     />
     <meta name="twitter:image" content="https://haishishushu.github.io/cc-usage-website/og-cover.png" />
+    <link rel="canonical" href="https://haishishushu.github.io/cc-usage-website/" />
+    <!-- 结构化数据：搜索富摘要 + AI 引擎可引用的项目事实卡 -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "CC Usage",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Windows 10+",
+        "description": "常驻灵动岛的 AI 用量监控桌面应用：统一查看 Claude、Codex 等平台的订阅额度、Token 用量与请求日志，数据全部留在本机。",
+        "url": "https://haishishushu.github.io/cc-usage-website/",
+        "downloadUrl": "https://haishishushu.github.io/cc-usage-website/#/download",
+        "softwareVersion": "0.1.0",
+        "license": "https://github.com/haishishushu/cc-usage/blob/main/LICENSE",
+        "author": { "@type": "Person", "name": "haishishushu", "url": "https://github.com/haishishushu" },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "CC Usage 收费吗？",
+            "acceptedAnswer": { "@type": "Answer", "text": "基于 MIT 协议完全免费开源，没有付费墙，也没有账号体系。" }
+          },
+          {
+            "@type": "Question",
+            "name": "我的 AI 用量数据会上传吗？",
+            "acceptedAnswer": { "@type": "Answer", "text": "不会。会话记录从本机目录增量读取，统计结果存放在本地 SQLite，没有任何上传通道。" }
+          },
+          {
+            "@type": "Question",
+            "name": "如何监控 Claude Code 的 Token 用量？",
+            "acceptedAnswer": { "@type": "Answer", "text": "安装 CC Usage 后它会增量读取本机 Claude Code 会话记录，在灵动岛与主面板中实时展示 5 小时 / 7 天订阅额度窗口、Token 分项统计与逐条请求日志。" }
+          },
+          {
+            "@type": "Question",
+            "name": "支持哪些 AI 编程工具？",
+            "acceptedAnswer": { "@type": "Answer", "text": "Claude、Codex、Gemini、Grok、Zcode、Trae、Qoder 与 Workbuddy 八个平台，另支持智谱 GLM、Kimi、MiniMax、ZenMux、OpenCode Go、火山方舟等编程套餐额度直连查询。" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

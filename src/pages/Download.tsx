@@ -2,6 +2,7 @@ import { AppWindow, Download, Github, HardDrive, Laptop, Package, ShieldCheck, T
 import { Link } from "react-router"
 import { GhostButton, PrimaryButton } from "@/components/ui"
 import { APP_VERSION, DOWNLOAD_BASE_URL, RELEASE_TAG, RELEASES_URL } from "@/lib/version"
+import { usePageTitle } from "@/lib/usePageTitle"
 
 const DOWNLOAD_URLS = {
   windows: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-Windows-x86_64-Setup.exe`,
@@ -108,6 +109,7 @@ function Globe2() {
 }
 
 export default function DownloadPage() {
+  usePageTitle("下载 CC Usage — Windows 安装包免费下载（MIT 开源）")
   return (
     <>
       <section className="flex flex-col items-center gap-[18px] bg-bg px-6 pb-14 pt-[72px] text-center">

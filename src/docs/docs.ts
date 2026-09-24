@@ -65,7 +65,7 @@ export const DOCS: Doc[] = [
     slug: "installation",
     group: "快速开始",
     title: "安装与运行",
-    subtitle: "两种方式：下载安装包，或从源码运行。",
+    subtitle: "两种方式：下载安装包，或从源码运行，两分钟装好 Claude Code 用量监控。",
     toc: [
       { label: "前置要求", id: "prereq" },
       { label: "从安装包安装", id: "installer" },
@@ -299,7 +299,7 @@ export const DOCS: Doc[] = [
     slug: "stats",
     group: "使用指南",
     title: "统计与请求日志",
-    subtitle: "口径、分项与联动筛选。",
+    subtitle: "Token 用量、费用口径、分项明细与逐条请求日志的联动筛选。",
     toc: [
       { label: "统计口径", id: "ranges" },
       { label: "趋势图", id: "chart" },

@@ -46,6 +46,7 @@ import { TrendChartMock, RequestLogMock } from "@/components/mock/ChartMock"
 import { CLAUDE_QUOTAS, CODEX_QUOTAS } from "@/mock/data"
 import { RELEASE_TAG, RELEASES_URL } from "@/lib/version"
 import { PLATFORMS } from "@/lib/platforms"
+import { usePageTitle } from "@/lib/usePageTitle"
 
 function Hero() {
   return (
@@ -551,6 +552,7 @@ function Cta() {
 }
 
 export default function Home() {
+  usePageTitle("CC Usage — 常驻灵动岛的 AI 用量监控 · Claude / Codex 额度与 Token 统计")
   return (
     <>
       <Hero />

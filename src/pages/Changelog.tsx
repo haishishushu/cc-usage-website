@@ -2,6 +2,7 @@ import { Bell, Github, History, Laptop, Plug, Terminal, FlaskConical, Plus, Spar
 import type { LucideIcon } from "lucide-react"
 import { RELEASES_URL } from "@/lib/version"
 import { Chip } from "@/components/ui"
+import { usePageTitle } from "@/lib/usePageTitle"
 
 const FEATURES: string[] = [
   "灵动岛常驻桌面：无边框透明窗口、四边吸附、双击展开、拖动即停",
@@ -51,6 +52,7 @@ function TimelineItem({ icon: Icon, title, items, tone }: { icon: LucideIcon; ti
 }
 
 export default function ChangelogPage() {
+  usePageTitle("更新日志 — CC Usage 版本发布记录")
   return (
     <>
       <section className="flex flex-col items-center gap-3 bg-bg px-6 pb-12 pt-16 text-center">

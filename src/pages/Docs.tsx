@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import { Link, NavLink, useParams } from "react-router"
 import { DOCS, DOC_GROUPS, getDoc, type Block } from "@/docs/docs"
 import { cn } from "@/lib/cn"
+import { usePageTitle } from "@/lib/usePageTitle"
 
 function CodeBlock({ label, lines }: { label?: string; lines: { cmd: string; comment?: string }[] }) {
   return (
@@ -112,6 +113,7 @@ function BlockView({ b }: { b: Block }) {
 export default function DocsPage() {
   const { slug } = useParams()
   const doc = getDoc(slug) ?? DOCS[0]
+  usePageTitle(`${doc.title} — CC Usage 使用文档`)
   const index = DOCS.findIndex((d) => d.slug === doc.slug)
   const prev = index > 0 ? DOCS[index - 1] : null
   const next = index < DOCS.length - 1 ? DOCS[index + 1] : null
