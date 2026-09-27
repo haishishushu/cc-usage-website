@@ -1,16 +1,20 @@
 import { AppWindow, Download, Github, HardDrive, Laptop, Package, ShieldCheck, Terminal } from "lucide-react"
 import { Link } from "react-router"
 import { GhostButton, PrimaryButton } from "@/components/ui"
-import { APP_VERSION, DOWNLOAD_BASE_URL, RELEASE_TAG, RELEASES_URL } from "@/lib/version"
+import { RELEASES_URL } from "@/lib/version"
 import { usePageTitle } from "@/lib/usePageTitle"
+import { assetUrl, useLatestRelease, type LatestRelease } from "@/lib/useLatestRelease"
 
-const DOWNLOAD_URLS = {
-  windows: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-Windows-x86_64-Setup.exe`,
-  macArm64: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-macOS-arm64.dmg`,
-  macX64: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-macOS-x86_64.dmg`,
-  linuxAppImage: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-Linux-x86_64.AppImage`,
-  linuxDeb: `${DOWNLOAD_BASE_URL}/CC-Usage-${RELEASE_TAG}-Linux-x86_64.deb`,
-} as const
+/** 五个平台的安装包地址，全部按当前版本现拼，不写死版本号。 */
+function downloadUrls(release: LatestRelease) {
+  return {
+    windows: assetUrl(release, "Windows-x86_64-Setup.exe"),
+    macArm64: assetUrl(release, "macOS-arm64.dmg"),
+    macX64: assetUrl(release, "macOS-x86_64.dmg"),
+    linuxAppImage: assetUrl(release, "Linux-x86_64.AppImage"),
+    linuxDeb: assetUrl(release, "Linux-x86_64.deb"),
+  } as const
+}
 
 function InstallSteps() {
   const steps = [
@@ -45,7 +49,7 @@ function InstallSteps() {
   )
 }
 
-function Requirements() {
+function Requirements({ release }: { release: LatestRelease }) {
   return (
     <section className="flex flex-col gap-5 px-6 pb-[72px] pt-6">
       <div className="mx-auto grid w-full max-w-[1040px] gap-5 md:grid-cols-2">
@@ -66,8 +70,7 @@ function Requirements() {
         <div className="flex flex-col gap-3.5 rounded-card border border-border-base bg-surface-2 p-[22px]">
           <h3 className="text-[15px] font-bold text-text-primary">版本信息</h3>
           {[
-            ["版本号", RELEASE_TAG],
-            ["发布日期", "2026-09-22"],
+            ["版本号", `v${release.version}`],
             ["安装包", "EXE · DMG · AppImage · DEB"],
             ["开源协议", "MIT"],
             ["获取历史版本", "GitHub Releases"],
@@ -110,6 +113,8 @@ function Globe2() {
 
 export default function DownloadPage() {
   usePageTitle("下载 CC Usage — Windows 安装包免费下载（MIT 开源）")
+  const release = useLatestRelease()
+  const urls = downloadUrls(release)
   return (
     <>
       <section className="flex flex-col items-center gap-[18px] bg-bg px-6 pb-14 pt-[72px] text-center">
@@ -117,7 +122,7 @@ export default function DownloadPage() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.5-6.3 4.5L8 13.8 2 9.2h7.6z" />
           </svg>
-          最新稳定版 {RELEASE_TAG}（{APP_VERSION}） · 2026-09-22
+          最新版 v{release.version}
         </span>
         <h1 className="text-[40px] font-bold tracking-tight text-text-primary sm:text-[52px]">免费下载 CC Usage</h1>
         <p className="max-w-[640px] text-base leading-[1.8] text-text-secondary">
@@ -142,7 +147,7 @@ export default function DownloadPage() {
               <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-white">推荐</span>
             </div>
             {[
-              { icon: Package, label: `CC-Usage-${RELEASE_TAG}-Windows-x86_64-Setup.exe` },
+              { icon: Package, label: `CC-Usage-v${release.version}-Windows-x86_64-Setup.exe` },
               { icon: HardDrive, label: "约 3.8 MB · NSIS 中文安装向导" },
               { icon: ShieldCheck, label: "已内置 WebView2 引导，装完即用" },
             ].map((s) => (
@@ -152,7 +157,7 @@ export default function DownloadPage() {
               </div>
             ))}
             <div className="mt-auto flex flex-col gap-2.5 pt-1">
-              <PrimaryButton href={DOWNLOAD_URLS.windows} className="w-full justify-center px-0 py-3 text-sm">
+              <PrimaryButton href={urls.windows} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
                 下载安装包
               </PrimaryButton>
@@ -175,11 +180,11 @@ export default function DownloadPage() {
             </div>
             <p className="text-[13px] leading-[1.8] text-text-secondary">DMG 安装包，请按 Mac 的处理器架构选择版本。</p>
             <div className="mt-auto flex flex-col gap-2.5 pt-1">
-              <PrimaryButton href={DOWNLOAD_URLS.macArm64} className="w-full justify-center px-0 py-3 text-sm">
+              <PrimaryButton href={urls.macArm64} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
                 Apple Silicon
               </PrimaryButton>
-              <GhostButton href={DOWNLOAD_URLS.macX64} className="w-full justify-center px-0 py-3 text-sm">
+              <GhostButton href={urls.macX64} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
                 Intel
               </GhostButton>
@@ -198,11 +203,11 @@ export default function DownloadPage() {
             </div>
             <p className="text-[13px] leading-[1.8] text-text-secondary">通用发行版推荐 AppImage，Debian / Ubuntu 可选择 DEB。</p>
             <div className="mt-auto flex flex-col gap-2.5 pt-1">
-              <PrimaryButton href={DOWNLOAD_URLS.linuxAppImage} className="w-full justify-center px-0 py-3 text-sm">
+              <PrimaryButton href={urls.linuxAppImage} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
                 下载 AppImage
               </PrimaryButton>
-              <GhostButton href={DOWNLOAD_URLS.linuxDeb} className="w-full justify-center px-0 py-3 text-sm">
+              <GhostButton href={urls.linuxDeb} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
                 下载 DEB
               </GhostButton>
@@ -212,7 +217,7 @@ export default function DownloadPage() {
       </section>
 
       <InstallSteps />
-      <Requirements />
+      <Requirements release={release} />
 
       <section className="flex flex-col items-center gap-3 bg-bg px-6 pb-[72px] text-center">
         <p className="text-sm text-text-secondary">下载即表示你同意以 MIT 协议使用本软件。</p>

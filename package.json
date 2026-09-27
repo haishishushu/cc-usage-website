@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "node --test src/lib/platforms.test.mjs",
+    "test": "node --test \"src/**/*.test.mjs\"",
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {

@@ -44,11 +44,13 @@ import { IslandInteractive, IslandDock } from "@/components/mock/IslandMock"
 import { HeroDemo } from "@/components/mock/HeroDemo"
 import { TrendChartMock, RequestLogMock } from "@/components/mock/ChartMock"
 import { CLAUDE_QUOTAS, CODEX_QUOTAS } from "@/mock/data"
-import { RELEASE_TAG, RELEASES_URL } from "@/lib/version"
+import { RELEASES_URL } from "@/lib/version"
+import { useLatestRelease } from "@/lib/useLatestRelease"
 import { PLATFORMS } from "@/lib/platforms"
 import { usePageTitle } from "@/lib/usePageTitle"
 
 function Hero() {
+  const release = useLatestRelease()
   return (
     <section className="flex flex-col items-center gap-6 bg-bg px-6 pb-[64px] pt-[76px] text-center">
       <Link
@@ -56,7 +58,7 @@ function Hero() {
         className="flex items-center gap-2 rounded-full bg-accent-soft px-3.5 py-1.5 text-[13px] font-medium text-accent transition-opacity hover:opacity-90"
       >
         <Sparkles size={14} />
-        {RELEASE_TAG} 首个公开版本已发布
+        v{release.version} 已发布，支持应用内一键更新
       </Link>
       <h1 className="text-[44px] font-bold leading-[1.2] tracking-tight text-text-primary sm:text-[62px]">
         让 AI 用量，一眼看得见
