@@ -9,7 +9,7 @@ const LINK_GROUPS: { title: string; links: { label: string; to: string; external
     links: [
       { label: "功能特性", to: "/docs/features" },
       { label: "免费下载", to: "/download" },
-      { label: "常见问题", to: "/", anchor: "faq" },
+      { label: "常见问题", to: "/docs/troubleshooting" },
     ],
   },
   {
@@ -17,7 +17,7 @@ const LINK_GROUPS: { title: string; links: { label: string; to: string; external
     links: [
       { label: "使用文档", to: "/docs" },
       { label: "更新日志", to: "/changelog" },
-      { label: "快速上手", to: "/docs" },
+      { label: "快速上手", to: "/docs/first-run" },
     ],
   },
   {

@@ -1,5 +1,5 @@
-import { ArrowRight, ChevronRight, Copy, Lightbulb, TriangleAlert } from "lucide-react"
-import { useEffect } from "react"
+import { ArrowRight, ChevronRight, Copy, Lightbulb, TriangleAlert, X } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 import { Link, NavLink, useParams } from "react-router"
 import { DOCS, DOC_GROUPS, getDoc, type Block } from "@/docs/docs"
 import { cn } from "@/lib/cn"
@@ -25,7 +25,48 @@ function CodeBlock({ label, lines }: { label?: string; lines: { cmd: string; com
   )
 }
 
-function BlockView({ b }: { b: Block }) {
+type ImageBlock = Extract<Block, { t: "image" }>
+
+function ImagePreview({ image, onClose }: { image: ImageBlock; onClose: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    dialog.showModal()
+    return () => {
+      dialog.close()
+      document.body.style.overflow = previousOverflow
+    }
+  }, [])
+
+  return (
+    <dialog
+      ref={dialogRef}
+      aria-label={`图片预览：${image.alt}`}
+      onCancel={(event) => { event.preventDefault(); onClose() }}
+      onClick={(event) => { if (event.target === event.currentTarget) onClose() }}
+      className="fixed inset-0 m-auto max-h-[calc(100dvh-24px)] w-[min(96vw,1400px)] max-w-none overflow-hidden rounded-card border border-border-base bg-surface p-0 text-text-primary shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop:bg-black/75"
+    >
+      <div className="flex max-h-[calc(100dvh-24px)] flex-col">
+        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-border-base px-4 py-3 sm:px-5">
+          <span className="min-w-0 truncate text-sm font-semibold">{image.alt}</span>
+          <button type="button" onClick={onClose} aria-label="关闭图片预览" className="flex size-9 shrink-0 items-center justify-center rounded-md text-text-secondary transition-colors hover:bg-surface-2 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-accent">
+            <X size={18} aria-hidden="true" />
+          </button>
+        </div>
+        <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-surface-2 p-3 sm:p-5">
+          <img src={`${import.meta.env.BASE_URL}${image.src}`} alt={image.alt} className="max-h-[calc(100dvh-130px)] max-w-full object-contain" />
+        </div>
+        <p className="shrink-0 border-t border-border-base px-4 py-2.5 text-xs leading-[1.6] text-text-secondary sm:px-5">{image.caption} · 按 Esc 或点击空白处关闭</p>
+      </div>
+    </dialog>
+  )
+}
+
+function BlockView({ b, onPreview }: { b: Block; onPreview: (image: ImageBlock) => void }) {
   switch (b.t) {
     case "h2":
       return (
@@ -48,6 +89,15 @@ function BlockView({ b }: { b: Block }) {
       )
     case "code":
       return <CodeBlock label={b.label} lines={b.lines} />
+    case "image":
+      return (
+        <figure className="overflow-hidden rounded-[10px] border border-border-base bg-surface-2">
+          <button type="button" onClick={() => onPreview(b)} aria-label={`放大图片：${b.alt}`} className="block w-full cursor-zoom-in text-left focus-visible:outline-2 focus-visible:outline-accent">
+            <img src={`${import.meta.env.BASE_URL}${b.src}`} alt={b.alt} loading="lazy" className="block h-auto w-full" />
+          </button>
+          <figcaption className="border-t border-border-base px-4 py-2.5 text-xs leading-[1.6] text-text-secondary">{b.caption} · 点击查看大图</figcaption>
+        </figure>
+      )
     case "callout": {
       const warn = b.tone === "warn"
       return (
@@ -113,6 +163,7 @@ function BlockView({ b }: { b: Block }) {
 export default function DocsPage() {
   const { slug } = useParams()
   const doc = getDoc(slug) ?? DOCS[0]
+  const [previewImage, setPreviewImage] = useState<ImageBlock | null>(null)
   usePageTitle(`${doc.title} — CC Usage 使用文档`)
   const index = DOCS.findIndex((d) => d.slug === doc.slug)
   const prev = index > 0 ? DOCS[index - 1] : null
@@ -120,6 +171,7 @@ export default function DocsPage() {
 
   // 路由变化回到页顶
   useEffect(() => {
+    setPreviewImage(null)
     window.scrollTo(0, 0)
   }, [doc.slug])
 
@@ -160,6 +212,13 @@ export default function DocsPage() {
 
         {/* 正文 */}
         <main className="flex min-w-0 flex-1 flex-col gap-[22px]">
+          <nav aria-label="移动端文档目录" className="flex flex-wrap gap-2 lg:hidden">
+            {DOCS.map((item) => (
+              <NavLink key={item.slug} to={`/docs/${item.slug}`} className={({ isActive }) => cn("rounded-md border border-border-base px-2.5 py-1.5 text-xs", isActive ? "bg-accent-soft font-semibold text-accent" : "text-text-secondary")}>
+                {item.title}
+              </NavLink>
+            ))}
+          </nav>
           <nav className="flex items-center gap-1.5 text-xs">
             <Link to={`/docs/${DOCS[0].slug}`} className="text-text-muted hover:text-text-primary">
               文档
@@ -171,7 +230,7 @@ export default function DocsPage() {
           </nav>
           <h2 className="text-[32px] font-bold text-text-primary">{doc.title}</h2>
           {doc.blocks.map((b, i) => (
-            <BlockView key={i} b={b} />
+            <BlockView key={i} b={b} onPreview={setPreviewImage} />
           ))}
 
           {/* 上下篇 */}
@@ -224,6 +283,7 @@ export default function DocsPage() {
           <ArrowRight size={15} />
         </Link>
       </section>
+      {previewImage ? <ImagePreview image={previewImage} onClose={() => setPreviewImage(null)} /> : null}
     </>
   )
 }
