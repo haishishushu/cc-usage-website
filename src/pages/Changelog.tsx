@@ -20,11 +20,69 @@ type ReleaseEntry = {
 
 const RELEASES: ReleaseEntry[] = [
   {
+    title: "v0.1.14", badge: "正式版", date: "2026-09-28",
+    summary: "每个版本独立发布，安装包与更新清单对应同一版本。",
+    url: `${REPO_URL}/releases/tag/v0.1.14`,
+    groups: [{ icon: Wrench, title: "发布与质量", tone: "text-text-secondary", items: [
+      "新版本使用独立的版本标签与发行页，历史安装包保留在各自版本下，不再混放到同一个发行页。",
+      "发布更新清单前校验 Windows、macOS 与 Linux 安装包是否齐全，并检查文件名、版本号和下载地址一致。",
+      "v0.1.9 至 v0.1.13 的原始安装包已分别归档到对应发行页；官网可按版本查看并下载。",
+    ] }],
+    commits: ["0a06adc"],
+  },
+  {
+    title: "v0.1.13", badge: "正式版", date: "2026-09-28",
+    summary: "优化启动体验，记住主面板位置，并加入首次使用引导。",
+    url: `${REPO_URL}/releases/tag/v0.1.13`,
+    groups: [
+      { icon: Sparkles, title: "新功能", tone: "text-text-primary", items: [
+        "启动时显示加载过渡，主面板就绪后再进入界面，减少启动等待时的空白感。",
+        "重复点击快捷方式会唤起已有程序，始终保持单实例运行。",
+        "首次启动自动打开主面板并水平、垂直居中；之后恢复上次保存的位置与尺寸。",
+        "首次使用时，灵动岛先在桌面上方居中显示 5 秒，再自动贴边，帮助用户找到入口。",
+      ] },
+      { icon: Wrench, title: "改进与修复", tone: "text-text-secondary", items: [
+        "从主面板启用连接后，灵动岛自动刷新该连接的额度与本机会话。",
+        "更新提示与安装确认统一采用绿色状态样式。",
+        "避免把最小化时的异常坐标记为窗口位置；显示器或分辨率变化后，主面板仍保持在可见区域。",
+      ] },
+    ],
+    commits: ["d3e4af3"],
+  },
+  {
+    title: "v0.1.12", badge: "正式版", date: "2026-09-28",
+    summary: "统一自动发行的版本递增规则。",
+    url: `${REPO_URL}/releases/tag/v0.1.12`,
+    groups: [{ icon: Wrench, title: "发布与质量", tone: "text-text-secondary", items: [
+      "按已发布版本递增修订号，避免工作流运行次数影响版本编号。",
+      "修订号从 99 递增到 100，下一版次版本加 1、修订号归零，例如 0.1.100 → 0.2.0。",
+    ] }],
+    commits: ["8837fe6"],
+  },
+  {
     title: "v0.1.11",
     badge: "历史版本",
     date: "2026-09-27",
-    summary: "持续构建的功能更新与问题修复。",
+    summary: "修复持续构建的发行标题与最新版本标记。",
     url: `${REPO_URL}/releases/tag/v0.1.11`,
+    groups: [{ icon: Wrench, title: "改进与修复", tone: "text-text-secondary", items: [
+      "修复旧持续构建流程发布后标题仍停留在旧版本的问题，并同步最新发行标记。",
+    ] }],
+    commits: ["adf6ceb"],
+  },
+  {
+    title: "v0.1.10", badge: "历史版本", date: "2026-09-27",
+    summary: "修正最新发行版识别与更新回退地址。",
+    url: `${REPO_URL}/releases/tag/v0.1.10`,
+    groups: [{ icon: Wrench, title: "改进与修复", tone: "text-text-secondary", items: [
+      "持续构建不再标为预发布，修正最新发行版徽章及回退下载地址指向旧版本的问题。",
+    ] }],
+    commits: ["0e83998"],
+  },
+  {
+    title: "v0.1.9", badge: "历史版本", date: "2026-09-27",
+    summary: "完善应用内自动更新，新增 ZCode 额度查询与连接用量展示。",
+    url: `${REPO_URL}/releases/tag/v0.1.9`,
     groups: [
       {
         icon: Sparkles, title: "新功能", tone: "text-text-primary",
@@ -39,12 +97,10 @@ const RELEASES: ReleaseEntry[] = [
         icon: Wrench, title: "改进与修复", tone: "text-text-secondary",
         items: [
           "更新检查支持系统代理，下载进度与签名校验状态在应用内可见。",
-          "持续构建不再标为预发布，修正最新发行版徽章及回退下载地址指向旧版本的问题。",
-          "复用 continuous 标签发布后同步发行版标题和最新标记，避免元数据停留在旧构建。",
         ],
       },
     ],
-    commits: ["749f3de", "0e83998", "adf6ceb"],
+    commits: ["749f3de"],
   },
   {
     title: "使用文档与展示资料",
