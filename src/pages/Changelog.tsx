@@ -20,6 +20,17 @@ type ReleaseEntry = {
 
 const RELEASES: ReleaseEntry[] = [
   {
+    title: "v0.1.15", badge: "正式版", date: "2026-09-28",
+    summary: "修复更新或重启后灵动岛未恢复上次连接的问题。",
+    url: `${REPO_URL}/releases/tag/v0.1.15`,
+    groups: [{ icon: Wrench, title: "改进与修复", tone: "text-text-secondary", items: [
+      "读取旧版本设置时，缺失字段单独补充默认值，保留已保存的灵动岛平台、连接和名称。",
+      "后台数据初始化完成后，自动刷新连接列表与灵动岛设置，恢复上次选择的连接，无需手动重新切换。",
+      "修复启动时连接刷新先后顺序导致的异常，避免较早失败的请求覆盖后来成功读取的连接状态。",
+    ] }],
+    commits: ["2e4abf6"],
+  },
+  {
     title: "v0.1.14", badge: "正式版", date: "2026-09-28",
     summary: "每个版本独立发布，安装包与更新清单对应同一版本。",
     url: `${REPO_URL}/releases/tag/v0.1.14`,

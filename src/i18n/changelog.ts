@@ -1,4 +1,8 @@
 export const CHANGELOG_EN: Record<string, string> = {
+  "修复更新或重启后灵动岛未恢复上次连接的问题。": "Fixed the island failing to restore the previously selected connection after an update or restart.",
+  "读取旧版本设置时，缺失字段单独补充默认值，保留已保存的灵动岛平台、连接和名称。": "When loading settings from an older version, fill in defaults only for missing fields while preserving the saved island platform, connection, and name.",
+  "后台数据初始化完成后，自动刷新连接列表与灵动岛设置，恢复上次选择的连接，无需手动重新切换。": "Refresh connections and island settings when background data initialization finishes, restoring the previous selection without manually switching again.",
+  "修复启动时连接刷新先后顺序导致的异常，避免较早失败的请求覆盖后来成功读取的连接状态。": "Fixed startup refresh ordering so an earlier failed request cannot overwrite connection state from a newer successful request.",
   "每个版本独立发布，安装包与更新清单对应同一版本。": "Each version has its own release, with matching installers and update metadata.",
   "新版本使用独立的版本标签与发行页，历史安装包保留在各自版本下，不再混放到同一个发行页。": "New versions use separate tags and release pages. Previous installers remain available under their own versions.",
   "发布更新清单前校验 Windows、macOS 与 Linux 安装包是否齐全，并检查文件名、版本号和下载地址一致。": "Before publishing update metadata, verify that all Windows, macOS, and Linux installers are present and their filenames, versions, and download URLs match.",
