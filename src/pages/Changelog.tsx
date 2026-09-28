@@ -1,8 +1,11 @@
-import { Bell, Github, Plus, Sparkles, Wrench } from "lucide-react"
+import { useEffect, useState } from "react"
+import { ArrowUpRight, Bell, Github, Plus, Sparkles, Wrench } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { RELEASES_URL, REPO_URL } from "@/lib/version"
 import { Chip } from "@/components/ui"
 import { usePageTitle } from "@/lib/usePageTitle"
+import { useDictionary, useText } from "@/lib/locale"
+import { CHANGELOG_EN } from "@/i18n/changelog"
 
 type ChangeGroup = { icon: LucideIcon; title: string; items: string[]; tone: string }
 type ReleaseEntry = {
@@ -17,11 +20,11 @@ type ReleaseEntry = {
 
 const RELEASES: ReleaseEntry[] = [
   {
-    title: "持续构建 · v0.1.11",
-    badge: "最新构建",
+    title: "v0.1.11",
+    badge: "历史版本",
     date: "2026-09-27",
     summary: "持续构建的功能更新与问题修复。",
-    url: `${REPO_URL}/releases/tag/continuous`,
+    url: `${REPO_URL}/releases/tag/v0.1.11`,
     groups: [
       {
         icon: Sparkles, title: "新功能", tone: "text-text-primary",
@@ -96,17 +99,82 @@ const RELEASES: ReleaseEntry[] = [
   },
 ]
 
+type ReleaseVersion = { tag: string }
+
+/** GitHub 的独立发行版是版本列表的权威来源，按版本号排序而非迁移日期。 */
+function VersionIndex() {
+  const t = useText()
+  const [versions, setVersions] = useState<ReleaseVersion[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    const load = async () => {
+      try {
+        const all: ReleaseVersion[] = []
+        for (let page = 1; page <= 10; page += 1) {
+          const response = await fetch(`https://api.github.com/repos/haishishushu/cc-usage/releases?per_page=100&page=${page}`, {
+            signal: controller.signal,
+            headers: { Accept: "application/vnd.github+json" },
+          })
+          if (!response.ok) throw new Error(`GitHub API: ${response.status}`)
+          const batch = await response.json() as Array<{ tag_name?: string }>
+          all.push(...batch.filter((item) => /^v\d+\.\d+\.\d+$/.test(item.tag_name ?? "")).map((item) => ({ tag: item.tag_name! })))
+          if (batch.length < 100) break
+        }
+        all.sort((left, right) => {
+          const a = left.tag.slice(1).split(".").map(Number)
+          const b = right.tag.slice(1).split(".").map(Number)
+          for (let index = 0; index < 3; index += 1) if (a[index] !== b[index]) return b[index] - a[index]
+          return 0
+        })
+        if (!controller.signal.aborted) setVersions(all)
+      } catch {
+        // API 不可用时仍保留 GitHub Releases 列表入口。
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
+      }
+    }
+    void load()
+    return () => controller.abort()
+  }, [])
+
+  return (
+    <section className="mx-auto w-full max-w-[800px] px-6 pb-12">
+      <h2 className="text-xl font-bold text-text-primary">{t("按版本查看", "Browse by version")}</h2>
+      <p className="mt-2 text-sm leading-7 text-text-secondary">{t("每个版本都有独立发行页，进入后仅下载该版本的安装包。", "Each version has its own release page with installers for that version only.")}</p>
+      {versions.length > 0 ? (
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          {versions.map(({ tag }) => (
+            <a key={tag} href={`${REPO_URL}/releases/tag/${tag}`} target="_blank" rel="noreferrer"
+              className="group flex items-center justify-between rounded-card border border-border-base bg-surface px-4 py-3.5 text-sm font-semibold text-text-primary transition-colors hover:border-accent hover:text-accent"
+              aria-label={t(`查看 ${tag} 的发行页`, `View release ${tag}`)}>
+              <span className="tnum">{tag}</span><ArrowUpRight size={16} className="text-text-muted group-hover:text-accent" />
+            </a>
+          ))}
+        </div>
+      ) : (
+        <a href={`${REPO_URL}/releases`} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline">
+          {loading ? t("正在读取版本列表…", "Loading versions…") : t("在 GitHub 查看全部版本", "View all versions on GitHub")}
+          <ArrowUpRight size={15} />
+        </a>
+      )}
+    </section>
+  )
+}
+
 function TimelineItem({ icon: Icon, title, items, tone }: ChangeGroup) {
+  const tr = useDictionary(CHANGELOG_EN)
   return (
     <section className="flex flex-col gap-2.5">
       <div className="flex items-center gap-2">
         <Icon size={15} className={tone} />
-        <span className="text-sm font-bold text-text-primary">{title}</span>
+        <span className="text-sm font-bold text-text-primary">{tr(title)}</span>
       </div>
       {items.map((item) => (
         <div key={item} className="flex items-start gap-2.5">
           <Plus size={13} className="mt-[5px] shrink-0 text-green" />
-          <span className="text-[13px] leading-[1.8] text-text-secondary">{item}</span>
+          <span className="text-[13px] leading-[1.8] text-text-secondary">{tr(item)}</span>
         </div>
       ))}
     </section>
@@ -114,21 +182,22 @@ function TimelineItem({ icon: Icon, title, items, tone }: ChangeGroup) {
 }
 
 function ReleaseCard({ release, first }: { release: ReleaseEntry; first: boolean }) {
+  const tr = useDictionary(CHANGELOG_EN)
   return (
     <div className="relative flex flex-col gap-[18px] border-l border-border-base pb-9 pl-[26px] last:pb-2">
       <span className={`absolute -left-[5px] top-1.5 size-2.5 rounded-full ${first ? "bg-accent" : "bg-border-strong"}`} />
       <div className="flex flex-wrap items-center gap-2.5">
         <a href={release.url} target="_blank" rel="noreferrer" className="tnum font-mono text-[22px] font-bold text-text-primary hover:text-accent">
-          {release.title}
+          {tr(release.title)}
         </a>
-        <Chip tone={first ? "blue" : "neutral"}>{release.badge}</Chip>
+        <Chip tone={first ? "blue" : "neutral"}>{tr(release.badge)}</Chip>
         <span className="tnum font-mono text-[13px] text-text-muted">{release.date}</span>
       </div>
       <div className="flex flex-col gap-4 rounded-card border border-border-base bg-surface p-[22px]">
-        <p className="text-[13px] leading-[1.8] text-text-secondary">{release.summary}</p>
+        <p className="text-[13px] leading-[1.8] text-text-secondary">{tr(release.summary)}</p>
         {release.groups.map((group) => <TimelineItem key={group.title} {...group} />)}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border-base pt-3 text-xs text-text-muted">
-          <span>来源提交</span>
+          <span>{tr("来源提交")}</span>
           {release.commits.map((commit) => (
             <a key={commit} href={`${REPO_URL}/commit/${commit}`} target="_blank" rel="noreferrer" className="tnum font-mono text-accent hover:underline">
               {commit}
@@ -141,21 +210,24 @@ function ReleaseCard({ release, first }: { release: ReleaseEntry; first: boolean
 }
 
 export default function ChangelogPage() {
-  usePageTitle("更新日志 — CC Usage 版本发布记录")
+  const tr = useDictionary(CHANGELOG_EN)
+  usePageTitle(tr("更新日志 — CC Usage 版本发布记录"))
   return (
     <>
       <section className="flex flex-col items-center gap-3 bg-bg px-6 pb-12 pt-16 text-center">
-        <h1 className="text-[40px] font-bold tracking-tight text-text-primary">更新日志</h1>
-        <p className="text-[15px] text-text-secondary">正式发行与持续构建的产品变化 · 收录至 2026-09-27</p>
+        <h1 className="text-[40px] font-bold tracking-tight text-text-primary">{tr("更新日志")}</h1>
+        <p className="text-[15px] text-text-secondary">{tr("每个版本单独发布，查看对应的安装包与更新记录。")}</p>
         <div className="flex flex-wrap items-center justify-center gap-2.5 pt-3">
           <a href={RELEASES_URL} target="_blank" rel="noreferrer" className="motion-button inline-flex items-center gap-2 rounded-btn bg-text-primary px-[18px] py-[9px] text-[13px] font-semibold text-bg">
-            <Bell size={14} />查看最新发布
+            <Bell size={14} />{tr("查看最新发布")}
           </a>
           <a href={`${REPO_URL}/releases`} target="_blank" rel="noreferrer" className="motion-button inline-flex items-center gap-2 rounded-btn border border-border-strong bg-bg px-[18px] py-[9px] text-[13px] font-semibold text-text-primary hover:bg-surface-2">
             <Github size={14} />GitHub Releases
           </a>
         </div>
       </section>
+
+      <VersionIndex />
 
       <div className="mx-auto max-w-[800px] px-6 pb-20">
         {RELEASES.map((release, index) => <ReleaseCard key={release.title} release={release} first={index === 0} />)}

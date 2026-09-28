@@ -1,5 +1,6 @@
-import { Route, Routes, Link, useLocation } from "react-router"
-import { useEffect } from "react"
+import { Route, Routes, useLocation } from "react-router"
+import { Link, useText } from "@/lib/locale"
+import { useEffect, useRef } from "react"
 import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
 import Home from "@/pages/Home"
@@ -11,7 +12,13 @@ import SponsorsPage from "@/pages/Sponsors"
 /** 路由切换时回到页顶（并处理 #hash 锚点） */
 function ScrollToTop() {
   const { pathname, hash } = useLocation()
+  const previous = useRef({ pathname, hash })
   useEffect(() => {
+    const was = previous.current.pathname.replace(/^\/en(?=\/|$)/, "") || "/"
+    const now = pathname.replace(/^\/en(?=\/|$)/, "") || "/"
+    const hashChanged = previous.current.hash !== hash
+    previous.current = { pathname, hash }
+    if (was === now && !hashChanged) return
     if (hash) {
       document.querySelector(hash)?.scrollIntoView()
     } else {
@@ -45,12 +52,13 @@ function useAutoReveal() {
 }
 
 function NotFound() {
+  const t = useText()
   return (
     <section className="flex flex-col items-center gap-4 bg-bg px-6 py-32 text-center">
       <h1 className="text-5xl font-bold tracking-tight text-text-primary">404</h1>
-      <p className="text-text-secondary">页面不存在或已被移动。</p>
+      <p className="text-text-secondary">{t("页面不存在或已被移动。", "This page does not exist or has moved.")}</p>
       <Link to="/" className="text-sm font-semibold text-accent hover:underline">
-        返回首页
+        {t("返回首页", "Back to home")}
       </Link>
     </section>
   )
@@ -58,18 +66,23 @@ function NotFound() {
 
 export default function App() {
   useAutoReveal()
+  const routes = [
+    ["", <Home />],
+    ["download", <DownloadPage />],
+    ["docs", <DocsPage />],
+    ["docs/:slug", <DocsPage />],
+    ["changelog", <ChangelogPage />],
+    ["sponsors", <SponsorsPage />],
+  ] as const
   return (
     <div className="flex min-h-screen flex-col bg-bg">
       <ScrollToTop />
       <Navbar />
       <main className="flex-1">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/download" element={<DownloadPage />} />
-          <Route path="/docs" element={<DocsPage />} />
-          <Route path="/docs/:slug" element={<DocsPage />} />
-          <Route path="/changelog" element={<ChangelogPage />} />
-          <Route path="/sponsors" element={<SponsorsPage />} />
+          {(["", "/en"] as const).flatMap((prefix) => routes.map(([path, element]) => (
+            <Route key={`${prefix}/${path}`} path={`${prefix}/${path}`} element={element} />
+          )))}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

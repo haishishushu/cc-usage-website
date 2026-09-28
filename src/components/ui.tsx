@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react"
-import { Link } from "react-router"
+import { Link } from "@/lib/locale"
 import { cn } from "@/lib/cn"
 
 /** 区块标题：eyebrow 徽章（可选）+ 标题 + 副标题 */

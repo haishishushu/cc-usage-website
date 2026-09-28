@@ -1,10 +1,15 @@
 import { useEffect, useRef } from "react"
 import { cn } from "@/lib/cn"
+import { useLanguage } from "@/lib/locale"
+import { localizePreview } from "@/i18n/preview"
 
 type PreviewFocus = "autoplay" | "collapsed" | "expanded" | "panel" | "trend" | "logs" | "quota"
 
 /** 从 cc-usage/frontend 构建的真实浏览器预览。官网只提供容器，不重画产品界面。 */
 export function ActualFrontendFrame({ focus, title, className }: { focus: PreviewFocus; title: string; className?: string }) {
+  const { language } = useLanguage()
+  const languageRef = useRef(language)
+  languageRef.current = language
   const frameRef = useRef<HTMLIFrameElement>(null)
   const cleanupRef = useRef<(() => void) | null>(null)
   const windowName = focus === "autoplay" || focus === "collapsed" || focus === "expanded" ? "island" : "panel"
@@ -20,6 +25,11 @@ export function ActualFrontendFrame({ focus, title, className }: { focus: Previe
       cleanupRef.current?.()
     }
   }, [])
+
+  useEffect(() => {
+    const doc = frameRef.current?.contentDocument
+    if (doc?.body) localizePreview(doc, language)
+  }, [language])
 
   const ready = (frame: HTMLIFrameElement) => {
     cleanupRef.current?.()
@@ -47,9 +57,22 @@ export function ActualFrontendFrame({ focus, title, className }: { focus: Previe
 
     let prepared = false
     let modeTimer: number | undefined
+    let translationPending = false
+    let disposed = false
     let islandObserver: IntersectionObserver | undefined
+    const syncTranslation = () => {
+      if (translationPending || disposed) return
+      translationPending = true
+      win.queueMicrotask(() => {
+        translationPending = false
+        if (disposed) return
+        localizePreview(doc, languageRef.current)
+      })
+    }
     const clickControl = (label: string) => {
-      const button = [...doc.querySelectorAll("button")].find((item) => item.textContent?.trim() === label)
+      const button = [...doc.querySelectorAll("button")].find((item) =>
+        (item.dataset.previewOriginalLabel || item.textContent?.trim()) === label,
+      )
       button?.click()
       return Boolean(button)
     }
@@ -57,8 +80,8 @@ export function ActualFrontendFrame({ focus, title, className }: { focus: Previe
       if (modeTimer !== undefined) win.clearTimeout(modeTimer)
       modeTimer = undefined
       doc.body.classList.remove("hero-expanded")
-      if (doc.body.textContent?.includes("双击收缩")) clickControl("双击收缩")
-      if (doc.body.textContent?.includes("解除停靠")) clickControl("解除停靠")
+      if ([...doc.querySelectorAll("button")].some((item) => item.dataset.previewOriginalLabel === "双击收缩")) clickControl("双击收缩")
+      if ([...doc.querySelectorAll("button")].some((item) => item.dataset.previewOriginalLabel === "解除停靠")) clickControl("解除停靠")
     }
     const startAutoplay = () => {
       if (modeTimer !== undefined || win.matchMedia("(prefers-reduced-motion: reduce)").matches) return
@@ -81,7 +104,7 @@ export function ActualFrontendFrame({ focus, title, className }: { focus: Previe
     const configure = () => {
       if (prepared) return
       if (focus === "autoplay") {
-        if (![...doc.querySelectorAll("button")].some((item) => item.textContent?.trim() === "双击展开")) return
+        if (![...doc.querySelectorAll("button")].some((item) => (item.dataset.previewOriginalLabel || item.textContent?.trim()) === "双击展开")) return
         prepared = true
         islandObserver = new IntersectionObserver(([entry]) => {
           if (entry.isIntersecting) startAutoplay()
@@ -90,12 +113,12 @@ export function ActualFrontendFrame({ focus, title, className }: { focus: Previe
         islandObserver.observe(frame)
       } else if (focus === "expanded") {
         const label = "双击展开"
-        const button = [...doc.querySelectorAll("button")].find((item) => item.textContent?.trim() === label)
+        const button = [...doc.querySelectorAll("button")].find((item) => (item.dataset.previewOriginalLabel || item.textContent?.trim()) === label)
         if (!button) return
         prepared = true
         // 等产品预览的设置加载与 React 事件处理器完成挂载，再切到目标形态。
         modeTimer = win.setTimeout(() => {
-          const currentButton = [...doc.querySelectorAll("button")].find((item) => item.textContent?.trim() === label)
+          const currentButton = [...doc.querySelectorAll("button")].find((item) => (item.dataset.previewOriginalLabel || item.textContent?.trim()) === label)
           currentButton?.click()
         }, 350)
       } else if (focus === "trend" || focus === "logs") {
@@ -114,8 +137,13 @@ export function ActualFrontendFrame({ focus, title, className }: { focus: Previe
     const observer = new MutationObserver(configure)
     observer.observe(doc.body, { childList: true, subtree: true })
     configure()
+    const translationObserver = new MutationObserver(syncTranslation)
+    translationObserver.observe(doc.body, { childList: true, characterData: true, attributes: true, attributeFilter: ["aria-label", "title", "placeholder"], subtree: true })
+    syncTranslation()
     const cleanup = () => {
+      disposed = true
       observer.disconnect()
+      translationObserver.disconnect()
       islandObserver?.disconnect()
       if (modeTimer !== undefined) win.clearTimeout(modeTimer)
     }
@@ -125,6 +153,7 @@ export function ActualFrontendFrame({ focus, title, className }: { focus: Previe
 
   return (
     <iframe
+      key={language}
       ref={frameRef}
       src={`${import.meta.env.BASE_URL}desktop-preview/index.html?window=${windowName}`}
       title={title}

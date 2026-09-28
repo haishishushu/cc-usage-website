@@ -1,7 +1,7 @@
 import { AppWindow, Download, Github, HardDrive, Laptop, Package, ShieldCheck, Terminal } from "lucide-react"
-import { Link } from "react-router"
+import { Link, useDictionary } from "@/lib/locale"
+import { DOWNLOAD_EN } from "@/i18n/download"
 import { GhostButton, PrimaryButton } from "@/components/ui"
-import { RELEASES_URL } from "@/lib/version"
 import { usePageTitle } from "@/lib/usePageTitle"
 import { assetUrl, useLatestRelease, type LatestRelease } from "@/lib/useLatestRelease"
 
@@ -17,6 +17,7 @@ function downloadUrls(release: LatestRelease) {
 }
 
 function InstallSteps() {
+  const tr = useDictionary(DOWNLOAD_EN)
   const steps = [
     { title: "选择安装包", desc: "按你的操作系统与处理器架构，直接从 GitHub Releases 下载。" },
     { title: "运行安装包", desc: "Windows 运行 EXE，macOS 打开 DMG，Linux 使用 AppImage 或 DEB。" },
@@ -24,7 +25,7 @@ function InstallSteps() {
   ]
   return (
     <section className="flex flex-col items-center gap-7 bg-bg px-6 pb-10 pt-[72px]">
-      <h2 className="text-[28px] font-bold tracking-tight text-text-primary">安装只需三步</h2>
+      <h2 className="text-[28px] font-bold tracking-tight text-text-primary">{tr("安装只需三步")}</h2>
       <div className="flex w-full max-w-[1040px] flex-col items-stretch gap-4 sm:flex-row sm:items-start">
         {steps.map((s, i) => (
           <div key={s.title} className="flex flex-1 items-start gap-3">
@@ -32,8 +33,8 @@ function InstallSteps() {
               <span className="flex size-[34px] items-center justify-center rounded-full bg-accent-soft font-mono text-[15px] font-bold text-accent">
                 {i + 1}
               </span>
-              <span className="text-[15px] font-bold text-text-primary">{s.title}</span>
-              <span className="text-xs leading-[1.75] text-text-secondary">{s.desc}</span>
+              <span className="text-[15px] font-bold text-text-primary">{tr(s.title)}</span>
+              <span className="text-xs leading-[1.75] text-text-secondary">{tr(s.desc)}</span>
             </div>
             {i < steps.length - 1 ? (
               <div className="hidden pt-2.5 text-border-strong sm:block">
@@ -50,11 +51,12 @@ function InstallSteps() {
 }
 
 function Requirements({ release }: { release: LatestRelease }) {
+  const tr = useDictionary(DOWNLOAD_EN)
   return (
     <section className="flex flex-col gap-5 px-6 pb-[72px] pt-6">
       <div className="mx-auto grid w-full max-w-[1040px] gap-5 md:grid-cols-2">
         <div className="flex flex-col gap-4 rounded-card border border-border-base bg-surface-2 p-[22px]">
-          <h3 className="text-[15px] font-bold text-text-primary">系统要求</h3>
+          <h3 className="text-[15px] font-bold text-text-primary">{tr("系统要求")}</h3>
           {[
             { icon: Monitor2, label: "Windows 10 及以上版本" },
             { icon: Cpu2, label: "macOS · Apple Silicon 或 Intel" },
@@ -63,12 +65,12 @@ function Requirements({ release }: { release: LatestRelease }) {
           ].map((r) => (
             <div key={r.label} className="flex items-center gap-2.5 text-[13px] text-text-secondary">
               <r.icon size={15} className="text-text-muted" />
-              {r.label}
+              {tr(r.label)}
             </div>
           ))}
         </div>
         <div className="flex flex-col gap-3.5 rounded-card border border-border-base bg-surface-2 p-[22px]">
-          <h3 className="text-[15px] font-bold text-text-primary">版本信息</h3>
+          <h3 className="text-[15px] font-bold text-text-primary">{tr("版本信息")}</h3>
           {[
             ["版本号", `v${release.version}`],
             ["安装包", "EXE · DMG · AppImage · DEB"],
@@ -76,7 +78,7 @@ function Requirements({ release }: { release: LatestRelease }) {
             ["获取历史版本", "GitHub Releases"],
           ].map(([k, v]) => (
             <div key={k} className="flex items-center justify-between">
-              <span className="text-[13px] text-text-muted">{k}</span>
+              <span className="text-[13px] text-text-muted">{tr(k)}</span>
               <span className="tnum font-mono text-xs font-semibold text-text-primary">{v}</span>
             </div>
           ))}
@@ -112,9 +114,11 @@ function Globe2() {
 }
 
 export default function DownloadPage() {
-  usePageTitle("下载 CC Usage — Windows、macOS、Linux 安装包免费下载（MIT 开源）")
+  const tr = useDictionary(DOWNLOAD_EN)
+  usePageTitle(tr("下载 CC Usage — Windows、macOS、Linux 安装包免费下载（MIT 开源）"))
   const release = useLatestRelease()
   const urls = downloadUrls(release)
+  const releasePageUrl = release.downloadBase.replace("/releases/download/", "/releases/tag/")
   return (
     <>
       <section className="flex flex-col items-center gap-[18px] bg-bg px-6 pb-14 pt-[72px] text-center">
@@ -122,11 +126,11 @@ export default function DownloadPage() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.5-6.3 4.5L8 13.8 2 9.2h7.6z" />
           </svg>
-          最新版 v{release.version}
+          {tr("最新版")} v{release.version}
         </span>
-        <h1 className="text-[40px] font-bold tracking-tight text-text-primary sm:text-[52px]">免费下载 CC Usage</h1>
+        <h1 className="text-[40px] font-bold tracking-tight text-text-primary sm:text-[52px]">{tr("免费下载 CC Usage")}</h1>
         <p className="max-w-[640px] text-base leading-[1.8] text-text-secondary">
-          基于 MIT 协议开源，永久免费。下载即用，数据全程留在本机。
+          {tr("基于 MIT 协议开源，永久免费。下载即用，数据全程留在本机。")}
         </p>
       </section>
 
@@ -141,10 +145,10 @@ export default function DownloadPage() {
                 </span>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[17px] font-bold text-text-primary">Windows</span>
-                  <span className="text-xs text-text-secondary">Windows 10 及以上 · x64</span>
+                  <span className="text-xs text-text-secondary">{tr("Windows 10 及以上 · x64")}</span>
                 </div>
               </div>
-              <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-white">推荐</span>
+              <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-white">{tr("推荐")}</span>
             </div>
             {[
               { icon: Package, label: `CC-Usage-v${release.version}-Windows-x86_64-Setup.exe` },
@@ -153,15 +157,15 @@ export default function DownloadPage() {
             ].map((s) => (
               <div key={s.label} className="flex items-center gap-2 text-[13px] text-text-secondary">
                 <s.icon size={14} className="shrink-0 text-text-muted" />
-                <span className="tnum min-w-0 break-all">{s.label}</span>
+                <span className="tnum min-w-0 break-all">{tr(s.label)}</span>
               </div>
             ))}
             <div className="mt-auto flex flex-col gap-2.5 pt-1">
               <PrimaryButton href={urls.windows} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
-                下载安装包
+                {tr("下载安装包")}
               </PrimaryButton>
-              <GhostButton href={RELEASES_URL} className="w-full justify-center px-0 py-3 text-sm">
+              <GhostButton href={releasePageUrl} className="w-full justify-center px-0 py-3 text-sm">
                 <Github size={16} />
                 GitHub Releases
               </GhostButton>
@@ -178,7 +182,7 @@ export default function DownloadPage() {
                 <span className="text-xs text-text-secondary">Apple Silicon / Intel</span>
               </div>
             </div>
-            <p className="text-[13px] leading-[1.8] text-text-secondary">DMG 安装包，请按 Mac 的处理器架构选择版本。</p>
+            <p className="text-[13px] leading-[1.8] text-text-secondary">{tr("DMG 安装包，请按 Mac 的处理器架构选择版本。")}</p>
             <div className="mt-auto flex flex-col gap-2.5 pt-1">
               <PrimaryButton href={urls.macArm64} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
@@ -201,15 +205,15 @@ export default function DownloadPage() {
                 <span className="text-xs text-text-secondary">x64</span>
               </div>
             </div>
-            <p className="text-[13px] leading-[1.8] text-text-secondary">通用发行版推荐 AppImage，Debian / Ubuntu 可选择 DEB。</p>
+            <p className="text-[13px] leading-[1.8] text-text-secondary">{tr("通用发行版推荐 AppImage，Debian / Ubuntu 可选择 DEB。")}</p>
             <div className="mt-auto flex flex-col gap-2.5 pt-1">
               <PrimaryButton href={urls.linuxAppImage} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
-                下载 AppImage
+                {tr("下载 AppImage")}
               </PrimaryButton>
               <GhostButton href={urls.linuxDeb} className="w-full justify-center px-0 py-3 text-sm">
                 <Download size={16} />
-                下载 DEB
+                {tr("下载 DEB")}
               </GhostButton>
             </div>
           </div>
@@ -220,9 +224,9 @@ export default function DownloadPage() {
       <Requirements release={release} />
 
       <section className="flex flex-col items-center gap-3 bg-bg px-6 pb-[72px] text-center">
-        <p className="text-sm text-text-secondary">下载即表示你同意以 MIT 协议使用本软件。</p>
+        <p className="text-sm text-text-secondary">{tr("下载即表示你同意以 MIT 协议使用本软件。")}</p>
         <Link to="/docs" className="text-sm font-semibold text-accent hover:underline">
-          安装遇到问题？查看文档 →
+          {tr("安装遇到问题？查看文档 →")}
         </Link>
       </section>
     </>

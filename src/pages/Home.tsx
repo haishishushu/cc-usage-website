@@ -28,7 +28,8 @@ import {
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useState } from "react"
-import { Link } from "react-router"
+import { Link, useDictionary } from "@/lib/locale"
+import { HOME_EN } from "@/i18n/home"
 import { cn } from "@/lib/cn"
 import { SectionHeading, PrimaryButton, GhostButton, Chip } from "@/components/ui"
 import { PlatformLogo } from "@/components/Logo"
@@ -45,6 +46,7 @@ import opencodeLogo from "@/assets/providers/opencode.svg"
 import volcLogo from "@/assets/providers/volc.png"
 
 function Hero() {
+  const tr = useDictionary(HOME_EN)
   const release = useLatestRelease()
   return (
     <section className="flex flex-col items-center gap-6 bg-bg px-6 pb-[64px] pt-[76px] text-center">
@@ -53,28 +55,28 @@ function Hero() {
         className="flex items-center gap-2 rounded-full bg-accent-soft px-3.5 py-1.5 text-[13px] font-medium text-accent transition-opacity hover:opacity-90"
       >
         <Sparkles size={14} />
-        v{release.version} 已发布，支持应用内一键更新
+        v{release.version} {tr("已发布，支持应用内一键更新")}
       </Link>
-      <h1 className="text-[44px] font-bold leading-[1.2] tracking-tight text-text-primary sm:text-[62px]">
-        让 AI 用量，一眼看得见
+      <h1 className="max-w-[900px] text-balance text-[44px] font-bold leading-[1.2] tracking-tight text-text-primary sm:text-[62px]">
+        {tr("让 AI 用量，一眼看得见")}
       </h1>
       <p className="max-w-[700px] text-[17px] leading-[1.8] text-text-secondary">
-        常驻桌面的灵动岛 + 完整主面板，统一查看 Claude、Codex、Gemini、Grok、Zcode、Trae、Qoder 与 Workbuddy。数据全部留在本机。
+        {tr("常驻桌面的灵动岛 + 完整主面板，统一查看 Claude、Codex、Gemini、Grok、Zcode、Trae、Qoder 与 Workbuddy。数据全部留在本机。")}
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3.5">
         <PrimaryButton to="/download">
           <Download size={17} />
-          免费下载
+          {tr("免费下载")}
         </PrimaryButton>
         <GhostButton to="/docs">
           <BookOpen size={17} />
-          查看文档
+          {tr("查看文档")}
         </GhostButton>
       </div>
       {/* 真实灵动岛自动切换形态。 */}
       <div className="flex w-full justify-center pt-6">
         <div className="relative h-[340px] w-full max-w-[720px]">
-          <ActualFrontendFrame focus="autoplay" title="CC Usage 真实灵动岛自动演示" className="relative h-full" />
+          <ActualFrontendFrame focus="autoplay" title={tr("CC Usage 真实灵动岛自动演示")} className="relative h-full" />
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-[18px] pt-2 text-[13px] text-text-muted">
@@ -85,7 +87,7 @@ function Hero() {
         ].map((m) => (
           <span key={m.label} className="flex items-center gap-1.5">
             <m.icon size={14} />
-            {m.label}
+            {tr(m.label)}
           </span>
         ))}
       </div>
@@ -101,17 +103,18 @@ const ISLAND_POINTS = [
 ]
 
 function IslandShowcase() {
+  const tr = useDictionary(HOME_EN)
   return (
     <section className="flex flex-col items-center gap-[30px] bg-bg px-6 pb-[84px] pt-[76px]">
-      <span className="rounded-full bg-accent-soft px-3 py-[5px] text-xs font-semibold text-accent">灵动岛</span>
-      <h2 className="text-4xl font-bold tracking-tight text-text-primary sm:text-[44px]">桌面角落的用量仪表台</h2>
+      <span className="rounded-full bg-accent-soft px-3 py-[5px] text-xs font-semibold text-accent">{tr("灵动岛")}</span>
+      <h2 className="text-balance text-center text-4xl font-bold tracking-tight text-text-primary sm:text-[44px]">{tr("桌面角落的用量仪表台")}</h2>
       <p className="max-w-[620px] text-center text-base leading-[1.8] text-text-secondary">
-        不切窗口、不占任务栏，5 小时 / 7 天窗口的水位随取随看，刷新时有一道柔光掠过。
+        {tr("不切窗口、不占任务栏，5 小时 / 7 天窗口的水位随取随看，刷新时有一道柔光掠过。")}
       </p>
       <div className="w-full max-w-[1240px]">
-        <MockLabel>桌面端真实灵动岛 · 展开状态</MockLabel>
+        <MockLabel>{tr("桌面端真实灵动岛 · 展开状态")}</MockLabel>
         <div className="flex justify-center">
-          <ActualFrontendFrame focus="expanded" title="CC Usage 真实灵动岛展开态" className="h-[420px]" />
+          <ActualFrontendFrame focus="expanded" title={tr("CC Usage 真实灵动岛展开态")} className="h-[420px]" />
         </div>
       </div>
       <div className="grid w-full max-w-[1240px] gap-5 pt-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -120,8 +123,8 @@ function IslandShowcase() {
             <span className="flex size-[34px] items-center justify-center rounded-[9px] border border-border-base bg-surface text-accent">
               <p.icon size={16} />
             </span>
-            <span className="text-[13px] font-bold text-text-primary">{p.title}</span>
-            <span className="text-[11px] leading-[1.7] text-text-secondary">{p.desc}</span>
+            <span className="text-[13px] font-bold text-text-primary">{tr(p.title)}</span>
+            <span className="text-[11px] leading-[1.7] text-text-secondary">{tr(p.desc)}</span>
           </div>
         ))}
       </div>
@@ -139,17 +142,19 @@ function MockLabel({ children }: { children: string }) {
 }
 
 function PanelShowcase() {
+  const tr = useDictionary(HOME_EN)
   return (
     <section className="flex flex-col items-center bg-bg px-6 pb-[90px]">
       <div className="w-full max-w-[1160px]">
-        <MockLabel>桌面端真实主面板 · 数字为产品内置设计示例</MockLabel>
-        <ActualFrontendFrame focus="panel" title="CC Usage 真实主面板" className="h-[690px] rounded-card border border-border-base" />
+        <MockLabel>{tr("桌面端真实主面板 · 数字为产品内置设计示例")}</MockLabel>
+        <ActualFrontendFrame focus="panel" title={tr("CC Usage 真实主面板")} className="h-[690px] rounded-card border border-border-base" />
       </div>
     </section>
   )
 }
 
 function Stats() {
+  const tr = useDictionary(HOME_EN)
   const stats = [
     { value: "8", label: "Claude / Codex / Gemini 等八个平台" },
     { value: "7", label: "编程套餐额度直连查询" },
@@ -161,7 +166,7 @@ function Stats() {
       {stats.map((s) => (
         <div key={s.label} className="flex flex-col items-center gap-1.5 text-center">
           <span className="tnum font-mono text-[38px] font-bold tracking-tight text-text-primary">{s.value}</span>
-          <span className="text-[13px] text-text-secondary">{s.label}</span>
+          <span className="text-[13px] text-text-secondary">{tr(s.label)}</span>
         </div>
       ))}
     </section>
@@ -180,19 +185,20 @@ const FEATURES: { icon: LucideIcon; tone: string; title: string; desc: string }[
 ]
 
 function Features() {
+  const tr = useDictionary(HOME_EN)
   return (
     <section className="border-y border-border-base bg-surface-2 px-6 py-[88px]">
       <div className="mx-auto flex max-w-[1240px] flex-col items-center gap-12">
-        <SectionHeading title="为什么选 CC Usage" subtitle="一个窗口盯住所有 AI 编程工具的额度与花销，数据全程不出本机。" />
-        <Link to="/docs/features" className="-mt-7 text-[13px] font-semibold text-accent hover:underline">查看完整功能与支持范围 →</Link>
+        <SectionHeading title={tr("为什么选 CC Usage")} subtitle={tr("一个窗口盯住所有 AI 编程工具的额度与花销，数据全程不出本机。")}/>
+        <Link to="/docs/features" className="-mt-7 text-[13px] font-semibold text-accent hover:underline">{tr("查看完整功能与支持范围 →")}</Link>
         <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div key={f.title} className="flex flex-col gap-3.5 rounded-card border border-border-base bg-surface p-[26px]">
               <span className={`flex size-[42px] items-center justify-center rounded-[11px] ${f.tone}`}>
                 <f.icon size={21} />
               </span>
-              <h3 className="text-[17px] font-bold text-text-primary">{f.title}</h3>
-              <p className="text-[13px] leading-[1.85] text-text-secondary">{f.desc}</p>
+              <h3 className="text-[17px] font-bold text-text-primary">{tr(f.title)}</h3>
+              <p className="text-[13px] leading-[1.85] text-text-secondary">{tr(f.desc)}</p>
             </div>
           ))}
         </div>
@@ -204,12 +210,13 @@ function Features() {
 const DETAIL_TABS = ["用量趋势", "请求日志", "连接与额度"] as const
 
 function DetailViews() {
+  const tr = useDictionary(HOME_EN)
   const [tab, setTab] = useState(0)
   return (
     <section className="flex flex-col items-center gap-10 bg-bg px-6 py-[88px]">
       <SectionHeading
-        title="每一笔用量，都能查到底"
-        subtitle="趋势图看走势，请求日志看单次；桌面端的时间范围与模型筛选可同步联动。下方为独立交互演示。"
+        title={tr("每一笔用量，都能查到底")}
+        subtitle={tr("趋势图看走势，请求日志看单次；桌面端的时间范围与模型筛选可同步联动。下方为独立交互演示。")}
       />
       <div className="flex gap-[3px] rounded-[10px] border border-border-base bg-surface-2 p-1">
         {DETAIL_TABS.map((t, i) => (
@@ -223,17 +230,17 @@ function DetailViews() {
                 : "rounded-lg px-[18px] py-2 text-[13px] text-text-secondary transition-colors hover:text-text-primary"
             }
           >
-            {t}
+            {tr(t)}
           </button>
         ))}
       </div>
       <div className="flex w-full max-w-[1240px] flex-col gap-5 rounded-card border border-border-base bg-surface-2 p-6">
         {tab === 0 ? (
-          <ActualFrontendFrame key="trend" focus="trend" title="CC Usage 真实趋势图" className="h-[530px] rounded-card bg-surface" />
+          <ActualFrontendFrame key="trend" focus="trend" title={tr("CC Usage 真实趋势图")} className="h-[530px] rounded-card bg-surface" />
         ) : tab === 1 ? (
-          <ActualFrontendFrame key="logs" focus="logs" title="CC Usage 真实请求日志" className="h-[530px] rounded-card bg-surface" />
+          <ActualFrontendFrame key="logs" focus="logs" title={tr("CC Usage 真实请求日志")} className="h-[530px] rounded-card bg-surface" />
         ) : (
-          <ActualFrontendFrame key="quota" focus="quota" title="CC Usage 真实连接与额度" className="h-[530px] rounded-card bg-surface" />
+          <ActualFrontendFrame key="quota" focus="quota" title={tr("CC Usage 真实连接与额度")} className="h-[530px] rounded-card bg-surface" />
         )}
       </div>
     </section>
@@ -261,6 +268,7 @@ const STACK_TAGS = [
 ]
 
 function TechSection() {
+  const tr = useDictionary(HOME_EN)
   return (
     <section className="border-t border-border-base bg-surface-2 px-6 py-[88px]">
       <div className="mx-auto flex max-w-[1240px] flex-col items-center gap-[72px] lg:flex-row">
@@ -269,13 +277,13 @@ function TechSection() {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M18 16l4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" />
             </svg>
-            开发者友好
+            {tr("开发者友好")}
           </span>
           <h2 className="text-[34px] font-bold leading-[1.3] tracking-tight text-text-primary sm:text-[38px]">
-            为长期跑在后台而造
+            {tr("为长期跑在后台而造")}
           </h2>
           <p className="text-[15px] leading-[1.9] text-text-secondary">
-            Rust 负责采集与只读查询，React 只管画面。灵动岛是无边框透明窗口，常驻不抢焦点；主面板关闭只隐藏，托盘随时唤回。
+            {tr("Rust 负责采集与只读查询，React 只管画面。灵动岛是无边框透明窗口，常驻不抢焦点；主面板关闭只隐藏，托盘随时唤回。")}
           </p>
           <div className="flex flex-col gap-3.5">
             {TECH_POINTS.map((p) => (
@@ -284,8 +292,8 @@ function TechSection() {
                   <p.icon size={17} />
                 </span>
                 <div className="flex flex-col gap-1">
-                  <span className="text-sm font-semibold text-text-primary">{p.title}</span>
-                  <span className="text-[13px] leading-[1.8] text-text-secondary">{p.desc}</span>
+                  <span className="text-sm font-semibold text-text-primary">{tr(p.title)}</span>
+                  <span className="text-[13px] leading-[1.8] text-text-secondary">{tr(p.desc)}</span>
                 </div>
               </div>
             ))}
@@ -297,13 +305,13 @@ function TechSection() {
               <span className="size-2 rounded-full bg-[#FF5F57]" />
               <span className="size-2 rounded-full bg-[#FEBC2E]" />
               <span className="size-2 rounded-full bg-[#28C840]" />
-              <span className="ml-1.5 font-mono text-xs text-text-secondary">数据都在这几个位置</span>
+              <span className="ml-1.5 font-mono text-xs text-text-secondary">{tr("数据都在这几个位置")}</span>
             </div>
             <div className="flex flex-col gap-2.5 px-5 py-[18px]">
               {CODE_LINES.map((l) => (
                 <div key={l.path} className="flex flex-wrap items-center justify-between gap-x-5">
                   <span className={`tnum font-mono text-[13px] ${l.color}`}>{l.path}</span>
-                  <span className="text-xs text-text-muted">{l.comment}</span>
+                  <span className="text-xs text-text-muted">{tr(l.comment)}</span>
                 </div>
               ))}
             </div>
@@ -326,12 +334,13 @@ function TechSection() {
 }
 
 function Platforms() {
+  const tr = useDictionary(HOME_EN)
   return (
     <section className="border-t border-border-base bg-bg px-6 py-[88px]">
       <div className="mx-auto flex max-w-[1240px] flex-col items-center gap-11">
         <SectionHeading
-          title="八个平台，一个统一看板"
-          subtitle="连接、会话、Token、缓存、积分与额度按平台真实能力展示；没有来源的数据不会被伪装成 0。"
+          title={tr("八个平台，一个统一看板")}
+          subtitle={tr("连接、会话、Token、缓存、积分与额度按平台真实能力展示；没有来源的数据不会被伪装成 0。")}
         />
         <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PLATFORMS.map((platform) => (
@@ -343,10 +352,10 @@ function Platforms() {
                 <span className="text-sm font-bold text-text-primary">{platform.name}</span>
                 <CircleCheck size={15} className="ml-auto text-green" />
               </div>
-              <p className="text-xs leading-[1.7] text-text-secondary">{platform.summary}</p>
+              <p className="text-xs leading-[1.7] text-text-secondary">{tr(platform.summary)}</p>
               <div className="mt-auto flex flex-wrap gap-1.5">
                 {platform.capabilities.map((capability) => (
-                  <Chip key={capability} tone="neutral">{capability}</Chip>
+                  <Chip key={capability} tone="neutral">{tr(capability)}</Chip>
                 ))}
               </div>
             </div>
@@ -370,12 +379,13 @@ const QUOTA_PROVIDERS: { name: string; type: string; logo: string }[] = [
 ]
 
 function Providers() {
+  const tr = useDictionary(HOME_EN)
   return (
     <section className="border-t border-border-base bg-surface-2 px-6 py-[88px]">
       <div className="mx-auto flex max-w-[1240px] flex-col items-center gap-11">
         <SectionHeading
-          title="额度服务商，自动识别"
-          subtitle="平台与额度服务商分开管理；支持的连接按 base_url 识别服务商，并展示其真实返回的额度窗口。"
+          title={tr("额度服务商，自动识别")}
+          subtitle={tr("平台与额度服务商分开管理；支持的连接按 base_url 识别服务商，并展示其真实返回的额度窗口。")}
         />
         <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {QUOTA_PROVIDERS.map((p) => (
@@ -386,14 +396,14 @@ function Providers() {
                   : <img src={p.logo} alt="" aria-hidden="true" className="size-[21px] object-contain" />}
               </span>
               <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
-                <span className="text-sm font-semibold text-text-primary">{p.name}</span>
-                <span className="text-[11px] text-text-muted">{p.type}</span>
+                <span className="text-sm font-semibold text-text-primary">{tr(p.name)}</span>
+                <span className="text-[11px] text-text-muted">{tr(p.type)}</span>
               </div>
               <CircleCheck size={15} className="text-green" />
             </div>
           ))}
         </div>
-        <p className="text-xs text-text-muted">额度查询为只读请求；只有服务商真实提供且已经适配的字段才会展示。</p>
+        <p className="text-xs text-text-muted">{tr("额度查询为只读请求；只有服务商真实提供且已经适配的字段才会展示。")}</p>
       </div>
     </section>
   )
@@ -409,6 +419,7 @@ const FAQS = [
 ]
 
 function Faq() {
+  const tr = useDictionary(HOME_EN)
   // 默认全部展开，点击标题可折叠（手风琴）
   const [closed, setClosed] = useState<ReadonlySet<number>>(new Set())
   const toggle = (i: number) =>
@@ -421,7 +432,7 @@ function Faq() {
   return (
     <section id="faq" className="border-t border-border-base bg-surface-2 px-6 py-[88px]">
       <div className="mx-auto flex max-w-[1240px] flex-col items-center gap-11">
-        <SectionHeading title="常见问题" subtitle="有疑问？我们先答为敬" />
+        <SectionHeading title={tr("常见问题")} subtitle={tr("有疑问？我们先答为敬")} />
         <div className="grid w-full gap-5 lg:grid-cols-2">
           {FAQS.map((f, i) => {
             const open = !closed.has(i)
@@ -430,11 +441,11 @@ function Faq() {
                 <button type="button" onClick={() => toggle(i)} className="flex items-center justify-between gap-2 text-left" aria-expanded={open}>
                   <span className="flex items-center gap-2">
                     <CircleHelp size={16} className="text-accent" />
-                    <span className="text-[15px] font-bold text-text-primary">{f.q}</span>
+                    <span className="text-[15px] font-bold text-text-primary">{tr(f.q)}</span>
                   </span>
                   <ChevronDown size={16} className={cn("shrink-0 text-text-muted transition-transform duration-200", open && "rotate-180")} />
                 </button>
-                {open ? <p className="text-[13px] leading-[1.85] text-text-secondary">{f.a}</p> : null}
+                {open ? <p className="text-[13px] leading-[1.85] text-text-secondary">{tr(f.a)}</p> : null}
               </div>
             )
           })}
@@ -451,9 +462,10 @@ const STEPS = [
 ]
 
 function Steps() {
+  const tr = useDictionary(HOME_EN)
   return (
     <section className="flex flex-col items-center gap-11 bg-bg px-6 py-[88px]">
-      <SectionHeading title="三步上手" subtitle="从下载到常驻，两分钟搞定。" />
+      <SectionHeading title={tr("三步上手")} subtitle={tr("从下载到常驻，两分钟搞定。")} />
       <div className="grid w-full max-w-[1120px] gap-5 sm:grid-cols-3">
         {STEPS.map((s) => (
           <div key={s.num} className="flex flex-col gap-3.5 rounded-card border border-border-base bg-surface p-[26px]">
@@ -463,8 +475,8 @@ function Steps() {
                 <s.icon size={19} />
               </span>
             </div>
-            <h3 className="text-[17px] font-bold text-text-primary">{s.title}</h3>
-            <p className="text-[13px] leading-[1.85] text-text-secondary">{s.desc}</p>
+            <h3 className="text-[17px] font-bold text-text-primary">{tr(s.title)}</h3>
+            <p className="text-[13px] leading-[1.85] text-text-secondary">{tr(s.desc)}</p>
           </div>
         ))}
       </div>
@@ -473,20 +485,21 @@ function Steps() {
 }
 
 function Cta() {
+  const tr = useDictionary(HOME_EN)
   return (
     <section className="flex flex-col items-center gap-6 bg-bg px-6 py-[100px] text-center">
       <h2 className="max-w-[760px] text-4xl font-bold leading-[1.3] tracking-tight text-text-primary sm:text-5xl">
-        准备好看清你的 AI 用量了吗？
+        {tr("准备好看清你的 AI 用量了吗？")}
       </h2>
-      <p className="text-base text-text-secondary">下载 CC Usage，让灵动岛替你盯着额度与花销。</p>
+      <p className="text-base text-text-secondary">{tr("下载 CC Usage，让灵动岛替你盯着额度与花销。")}</p>
       <div className="flex flex-wrap items-center justify-center gap-3.5">
         <PrimaryButton to="/download">
           <Download size={17} />
-          立即下载
+          {tr("立即下载")}
         </PrimaryButton>
         <GhostButton href={RELEASES_URL}>
           <Github size={17} />
-          查看 GitHub
+          {tr("查看 GitHub")}
         </GhostButton>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-[18px] text-[13px] text-text-muted">
@@ -497,7 +510,7 @@ function Cta() {
         ].map((m) => (
           <span key={m.label} className="flex items-center gap-1.5">
             <m.icon size={14} />
-            {m.label}
+            {tr(m.label)}
           </span>
         ))}
       </div>
@@ -506,7 +519,8 @@ function Cta() {
 }
 
 export default function Home() {
-  usePageTitle("CC Usage — 常驻灵动岛的 AI 用量监控 · Claude / Codex 额度与 Token 统计")
+  const tr = useDictionary({"CC Usage — 常驻灵动岛的 AI 用量监控 · Claude / Codex 额度与 Token 统计": "CC Usage — AI usage monitor for Claude, Codex, and more"})
+  usePageTitle(tr("CC Usage — 常驻灵动岛的 AI 用量监控 · Claude / Codex 额度与 Token 统计"))
   return (
     <>
       <Hero />
