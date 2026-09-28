@@ -4,6 +4,7 @@ node_modules/
 
 # 构建产物与缓存（vite 产物、tsc -b 增量信息）
 dist/
+/public/desktop-preview/
 build/
 .vite/
 .cache/

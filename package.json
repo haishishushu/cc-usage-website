@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build:desktop-preview": "node scripts/build-desktop-preview.mjs",
+    "build": "pnpm build:desktop-preview && tsc -b && vite build",
     "preview": "vite preview",
     "test": "node --test \"src/**/*.test.mjs\"",
     "typecheck": "tsc -b --noEmit"

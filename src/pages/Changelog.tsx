@@ -1,40 +1,102 @@
-import { Bell, Github, History, Laptop, Plug, Terminal, FlaskConical, Plus, Sparkles, Wrench } from "lucide-react"
+import { Bell, Github, Plus, Sparkles, Wrench } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
-import { RELEASES_URL } from "@/lib/version"
+import { RELEASES_URL, REPO_URL } from "@/lib/version"
 import { Chip } from "@/components/ui"
 import { usePageTitle } from "@/lib/usePageTitle"
 
-const FEATURES: string[] = [
-  "灵动岛常驻桌面：无边框透明窗口、四边吸附、双击展开、拖动即停",
-  "主面板总览：额度水位、本地 Token 统计、趋势图与请求日志",
-  "本地会话增量采集：读取 ~/.claude/projects 与 ~/.codex/sessions，按 message.id / response_id 去重",
-  "SQLite 存储与统计：今日 / 本周 / 本月 / 累计，按小时或按日趋势",
-  "编程套餐额度查询：智谱 GLM、Kimi、MiniMax、ZenMux、OpenCode Go、火山方舟、Grok 直连",
-  "系统托盘：左键打开主面板，主面板关闭只隐藏不退出",
-  "应用内自更新：启动自动检测新版本，绿色按钮一键下载安装并自动重启",
-  "连接管理升级：供应商手动接入（GLM / Kimi / DeepSeek 等 10+ 预设一键填入端点）",
-  "思考强度按模型获取：调官方 /v1/models 解析 capabilities.effort 并存入本机，下拉按模型过滤",
-  "连接检测：用保存的凭证对上游做一次轻量验证并显示延迟",
-  "启用即切换：点「启用」把连接写入 Claude Code / Codex 配置（写前自动备份）",
-  "请求日志：状态列显示上游真实响应码，未上报时按「成功」展示",
+type ChangeGroup = { icon: LucideIcon; title: string; items: string[]; tone: string }
+type ReleaseEntry = {
+  title: string
+  badge: string
+  date: string
+  summary: string
+  url: string
+  groups: ChangeGroup[]
+  commits: string[]
+}
+
+const RELEASES: ReleaseEntry[] = [
+  {
+    title: "持续构建 · v0.1.11",
+    badge: "最新构建",
+    date: "2026-09-27",
+    summary: "持续构建的功能更新与问题修复。",
+    url: `${REPO_URL}/releases/tag/continuous`,
+    groups: [
+      {
+        icon: Sparkles, title: "新功能", tone: "text-text-primary",
+        items: [
+          "自动更新打通检查、下载、签名校验、安装与重启；下载完成后由用户点击安装，失败时可重试。",
+          "ZCode 读取本机 BigModel Coding Plan API Key 查询套餐剩余额度；未配置该 Key 时明确提示，账号登录额度不冒充可查询。",
+          "连接列表新增额度 / 用量列，显示各连接可取得的额度、余额或本机统计，检测连接后可刷新当前行。",
+          "灵动岛、主面板与托盘摘要补充剩余额度及来源说明；不支持在线查询时展示原因，避免把本机消耗当成余额。",
+        ],
+      },
+      {
+        icon: Wrench, title: "改进与修复", tone: "text-text-secondary",
+        items: [
+          "更新检查支持系统代理，下载进度与签名校验状态在应用内可见。",
+          "持续构建不再标为预发布，修正最新发行版徽章及回退下载地址指向旧版本的问题。",
+          "复用 continuous 标签发布后同步发行版标题和最新标记，避免元数据停留在旧构建。",
+        ],
+      },
+    ],
+    commits: ["749f3de", "0e83998", "adf6ceb"],
+  },
+  {
+    title: "使用文档与展示资料",
+    badge: "文档更新",
+    date: "2026-09-23",
+    summary: "补齐面向用户的说明与真实界面截图。",
+    url: `${REPO_URL}/commits/main/`,
+    groups: [{
+      icon: Wrench, title: "改进", tone: "text-text-secondary",
+      items: [
+        "重写中文使用文档并新增英文说明，整理安装、连接、额度来源及使用步骤。",
+        "补充灵动岛收缩 / 展开、主面板、设置、请求日志和托盘菜单的界面截图。",
+        "新增发行说明模板，并将本地数据库与凭证文件加入忽略规则。",
+      ],
+    }],
+    commits: ["7b9ff43", "c1e9179"],
+  },
+  {
+    title: "v0.1.0",
+    badge: "正式版",
+    date: "2026-09-22",
+    summary: "首个带正式版本标签的桌面端发行版。",
+    url: `${REPO_URL}/releases/tag/v0.1.0`,
+    groups: [
+      {
+        icon: Sparkles, title: "核心功能", tone: "text-text-primary",
+        items: [
+          "灵动岛常驻桌面：无边框透明窗口、四边吸附、双击展开与停靠条。",
+          "主面板展示额度水位、本地 Token 统计、趋势图、请求日志与连接设置。",
+          "增量读取 Claude 与 Codex 本机会话，分别按 message.id / response_id 去重；统计存入本地 SQLite。",
+          "支持今日、本周、本月、累计及自定义日期统计，趋势图和请求日志可按模型筛选。",
+          "接入 Claude / Codex 官方额度，以及智谱 GLM、Kimi、MiniMax、ZenMux、OpenCode Go、火山方舟与 Grok 编程套餐查询；无法验证的额度保留未知状态。",
+          "连接管理覆盖 Claude、Codex、Gemini、Grok、Zcode、Trae、Qoder 与 Workbuddy，按各平台本机来源展示可用信息。",
+          "连接支持本机凭证发现、编辑、检测与余额提醒；手动接入时可从 GLM、Kimi、DeepSeek 等供应商预设填入服务地址。",
+          "编辑连接时回填已保存字段，API Key 默认密文显示并可切换明文；检测连接会用已保存的凭证做轻量验证并展示延迟。",
+          "按模型获取官方能力信息并筛选思考强度；启用连接时写入已支持的 Claude Code / Codex 配置，写入前自动备份。",
+          "请求日志按状态显示上游真实响应码，未上报响应码时按成功状态展示。",
+          "系统托盘提供窗口开关和用量摘要；主面板关闭时隐藏窗口，后台采集继续运行。",
+          "提供浅色 / 深色主题、中文 NSIS 安装向导和应用内更新入口。",
+        ],
+      },
+      {
+        icon: Wrench, title: "发布与质量", tone: "text-text-secondary",
+        items: [
+          "加入前端状态与交互测试、桌面验收脚本和资源生成脚本。",
+          "建立主分支持续构建流程，生成多平台安装包并统一发行文件命名。",
+          "修复 macOS 透明窗口编译与焦点事件兼容问题。",
+        ],
+      },
+    ],
+    commits: ["c1fc059"],
+  },
 ]
 
-const MISC: string[] = [
-  "连接管理覆盖 Claude、Codex、Gemini、Grok、Zcode、Trae、Qoder 与 Workbuddy",
-  "中文 NSIS 安装向导",
-  "浅色 / 深色双主题",
-  "平台扩展：Gemini / Grok / Zcode / Trae / Qoder / Workbuddy 按各自真实本机来源接入",
-  "编辑连接全量回填：API Key 密文显示、小眼睛切换明文",
-]
-
-const ROADMAP: { icon: LucideIcon; title: string; desc: string }[] = [
-  { icon: Laptop, title: "macOS 支持", desc: "Apple Silicon 与 Intel 适配在规划中" },
-  { icon: Terminal, title: "Linux 支持", desc: "AppImage / deb 打包形式调研中" },
-  { icon: Plug, title: "更多编程套餐适配", desc: "按社区反馈逐步扩展直连的服务商列表" },
-  { icon: FlaskConical, title: "真实账号联调完善", desc: "各套餐额度接口的真实账号验证持续进行" },
-]
-
-function TimelineItem({ icon: Icon, title, items, tone }: { icon: LucideIcon; title: string; items: string[]; tone: string }) {
+function TimelineItem({ icon: Icon, title, items, tone }: ChangeGroup) {
   return (
     <section className="flex flex-col gap-2.5">
       <div className="flex items-center gap-2">
@@ -51,75 +113,52 @@ function TimelineItem({ icon: Icon, title, items, tone }: { icon: LucideIcon; ti
   )
 }
 
+function ReleaseCard({ release, first }: { release: ReleaseEntry; first: boolean }) {
+  return (
+    <div className="relative flex flex-col gap-[18px] border-l border-border-base pb-9 pl-[26px] last:pb-2">
+      <span className={`absolute -left-[5px] top-1.5 size-2.5 rounded-full ${first ? "bg-accent" : "bg-border-strong"}`} />
+      <div className="flex flex-wrap items-center gap-2.5">
+        <a href={release.url} target="_blank" rel="noreferrer" className="tnum font-mono text-[22px] font-bold text-text-primary hover:text-accent">
+          {release.title}
+        </a>
+        <Chip tone={first ? "blue" : "neutral"}>{release.badge}</Chip>
+        <span className="tnum font-mono text-[13px] text-text-muted">{release.date}</span>
+      </div>
+      <div className="flex flex-col gap-4 rounded-card border border-border-base bg-surface p-[22px]">
+        <p className="text-[13px] leading-[1.8] text-text-secondary">{release.summary}</p>
+        {release.groups.map((group) => <TimelineItem key={group.title} {...group} />)}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border-base pt-3 text-xs text-text-muted">
+          <span>来源提交</span>
+          {release.commits.map((commit) => (
+            <a key={commit} href={`${REPO_URL}/commit/${commit}`} target="_blank" rel="noreferrer" className="tnum font-mono text-accent hover:underline">
+              {commit}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ChangelogPage() {
   usePageTitle("更新日志 — CC Usage 版本发布记录")
   return (
     <>
       <section className="flex flex-col items-center gap-3 bg-bg px-6 pb-12 pt-16 text-center">
         <h1 className="text-[40px] font-bold tracking-tight text-text-primary">更新日志</h1>
-        <p className="text-[15px] text-text-secondary">记录 CC Usage 的每一次演进</p>
+        <p className="text-[15px] text-text-secondary">正式发行与持续构建的产品变化 · 收录至 2026-09-27</p>
         <div className="flex flex-wrap items-center justify-center gap-2.5 pt-3">
-          <a
-            href={RELEASES_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="motion-button inline-flex items-center gap-2 rounded-btn bg-text-primary px-[18px] py-[9px] text-[13px] font-semibold text-bg"
-          >
-            <Bell size={14} />
-            订阅更新
+          <a href={RELEASES_URL} target="_blank" rel="noreferrer" className="motion-button inline-flex items-center gap-2 rounded-btn bg-text-primary px-[18px] py-[9px] text-[13px] font-semibold text-bg">
+            <Bell size={14} />查看最新发布
           </a>
-          <a
-            href={RELEASES_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="motion-button inline-flex items-center gap-2 rounded-btn border border-border-strong bg-bg px-[18px] py-[9px] text-[13px] font-semibold text-text-primary hover:bg-surface-2"
-          >
-            <Github size={14} />
-            GitHub Releases
+          <a href={`${REPO_URL}/releases`} target="_blank" rel="noreferrer" className="motion-button inline-flex items-center gap-2 rounded-btn border border-border-strong bg-bg px-[18px] py-[9px] text-[13px] font-semibold text-text-primary hover:bg-surface-2">
+            <Github size={14} />GitHub Releases
           </a>
         </div>
       </section>
 
       <div className="mx-auto max-w-[800px] px-6 pb-20">
-        {/* v0.1.0 */}
-        <div className="relative flex flex-col gap-[18px] border-l border-border-base pb-2 pl-[26px]">
-          <span className="absolute -left-[5px] top-1.5 size-2.5 rounded-full bg-accent" />
-          <div className="flex items-center gap-2.5">
-            <span className="tnum font-mono text-[22px] font-bold text-text-primary">v0.1.0</span>
-            <span className="rounded-full bg-accent px-2.5 py-[3px] text-[11px] font-semibold text-white">最新</span>
-            <span className="tnum font-mono text-[13px] text-text-muted">2026-09-19</span>
-          </div>
-          <div className="flex flex-col gap-4 rounded-card border border-border-base bg-surface p-[22px]">
-            <TimelineItem icon={Sparkles} title="新功能" items={FEATURES} tone="text-text-primary" />
-            <TimelineItem icon={Wrench} title="其他" items={MISC} tone="text-text-secondary" />
-            <div className="flex items-center gap-2 rounded-lg bg-surface-2 px-3.5 py-3">
-              <History size={14} className="text-text-muted" />
-              <span className="text-xs text-text-muted">更早版本为项目内部迭代，未对外发布。</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 路线图 */}
-        <div className="relative mt-2 flex flex-col gap-[18px] border-l border-border-base pl-[26px] pt-2">
-          <span className="absolute -left-[5px] top-3 size-2.5 rounded-full bg-border-strong" />
-          <div className="flex items-center gap-2.5">
-            <span className="text-xl font-bold text-text-secondary">路线图</span>
-            <Chip tone="amber">规划中</Chip>
-          </div>
-          <div className="flex flex-col gap-3 rounded-card border border-border-base bg-surface p-[22px]">
-            {ROADMAP.map((r) => (
-              <div key={r.title} className="flex items-start gap-2.5">
-                <span className="flex size-[30px] shrink-0 items-center justify-center rounded-lg bg-surface-2 text-text-muted">
-                  <r.icon size={14} />
-                </span>
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[13px] font-semibold text-text-secondary">{r.title}</span>
-                  <span className="text-xs leading-[1.7] text-text-muted">{r.desc}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {RELEASES.map((release, index) => <ReleaseCard key={release.title} release={release} first={index === 0} />)}
       </div>
     </>
   )

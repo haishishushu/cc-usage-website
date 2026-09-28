@@ -2,7 +2,6 @@ import {
   AlignHorizontalJustifyCenter,
   BadgeCheck,
   BookOpen,
-  Braces,
   ChartColumn,
   ChevronDown,
   CircleCheck,
@@ -10,14 +9,12 @@ import {
   Cpu,
   Database,
   Download,
-  Flame,
   FolderSearch,
   Gauge,
   Github,
   KeyRound,
   Layers,
   Monitor,
-  Moon,
   MousePointerClick,
   Move,
   Pin,
@@ -26,11 +23,7 @@ import {
   ScrollText,
   Settings2,
   ShieldCheck,
-  Shuffle,
   Sparkles,
-  Terminal,
-  Waves,
-  X,
   RefreshCw,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -39,15 +32,17 @@ import { Link } from "react-router"
 import { cn } from "@/lib/cn"
 import { SectionHeading, PrimaryButton, GhostButton, Chip } from "@/components/ui"
 import { PlatformLogo } from "@/components/Logo"
-import { PanelMock } from "@/components/mock/PanelMock"
-import { IslandInteractive, IslandDock } from "@/components/mock/IslandMock"
-import { HeroDemo } from "@/components/mock/HeroDemo"
-import { TrendChartMock, RequestLogMock } from "@/components/mock/ChartMock"
-import { CLAUDE_QUOTAS, CODEX_QUOTAS } from "@/mock/data"
+import { ActualFrontendFrame } from "@/components/ActualFrontendFrame"
 import { RELEASES_URL } from "@/lib/version"
 import { useLatestRelease } from "@/lib/useLatestRelease"
 import { PLATFORMS } from "@/lib/platforms"
 import { usePageTitle } from "@/lib/usePageTitle"
+import glmLogo from "@/assets/providers/glm.png"
+import kimiLogo from "@/assets/providers/kimi.svg"
+import minimaxLogo from "@/assets/providers/minimax.svg"
+import zenmuxLogo from "@/assets/providers/zenmux.svg"
+import opencodeLogo from "@/assets/providers/opencode.svg"
+import volcLogo from "@/assets/providers/volc.png"
 
 function Hero() {
   const release = useLatestRelease()
@@ -76,13 +71,15 @@ function Hero() {
           查看文档
         </GhostButton>
       </div>
-      {/* 首屏自动演示：零操作看懂灵动岛的完整交互循环 */}
+      {/* 真实灵动岛自动切换形态。 */}
       <div className="flex w-full justify-center pt-6">
-        <HeroDemo />
+        <div className="relative h-[340px] w-full max-w-[720px]">
+          <ActualFrontendFrame focus="autoplay" title="CC Usage 真实灵动岛自动演示" className="relative h-full" />
+        </div>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-[18px] pt-2 text-[13px] text-text-muted">
         {[
-          { icon: Monitor, label: "支持 Windows 10+" },
+          { icon: Monitor, label: "支持 Windows 10+、macOS、Linux" },
           { icon: Database, label: "本地 SQLite 存储" },
           { icon: BadgeCheck, label: "MIT 开源免费" },
         ].map((m) => (
@@ -112,15 +109,9 @@ function IslandShowcase() {
         不切窗口、不占任务栏，5 小时 / 7 天窗口的水位随取随看，刷新时有一道柔光掠过。
       </p>
       <div className="w-full max-w-[1240px]">
-        <MockLabel>灵动岛交互演示 · 双击切换形态，点 ⟳ 刷新</MockLabel>
+        <MockLabel>桌面端真实灵动岛 · 展开状态</MockLabel>
         <div className="flex justify-center">
-          <IslandInteractive />
-        </div>
-      </div>
-      <div className="w-full max-w-[1240px]">
-        <MockLabel>停靠条 · 贴边常驻</MockLabel>
-        <div className="flex justify-center">
-          <IslandDock />
+          <ActualFrontendFrame focus="expanded" title="CC Usage 真实灵动岛展开态" className="h-[420px]" />
         </div>
       </div>
       <div className="grid w-full max-w-[1240px] gap-5 pt-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -149,8 +140,11 @@ function MockLabel({ children }: { children: string }) {
 
 function PanelShowcase() {
   return (
-    <section className="flex justify-center bg-bg px-6 pb-[90px]">
-      <PanelMock className="max-w-[1160px]" />
+    <section className="flex flex-col items-center bg-bg px-6 pb-[90px]">
+      <div className="w-full max-w-[1160px]">
+        <MockLabel>桌面端真实主面板 · 数字为产品内置设计示例</MockLabel>
+        <ActualFrontendFrame focus="panel" title="CC Usage 真实主面板" className="h-[690px] rounded-card border border-border-base" />
+      </div>
     </section>
   )
 }
@@ -175,14 +169,14 @@ function Stats() {
 }
 
 const FEATURES: { icon: LucideIcon; tone: string; title: string; desc: string }[] = [
-  { icon: Pin, tone: "bg-accent-soft text-accent", title: "常驻灵动岛", desc: "桌面角落常驻的一枚小岛，四边吸附、双击展开、拖动即停。不切窗口就能看到额度水位。" },
-  { icon: Gauge, tone: "bg-green-soft text-green-text", title: "额度窗口实时可见", desc: "5 小时 / 7 天 / 月窗口的用量百分比与重置倒计时一屏看全，覆盖 Claude、Codex 与多家编程套餐。" },
+  { icon: Pin, tone: "bg-accent-soft text-accent", title: "灵动岛与系统托盘", desc: "收缩、展开、四边吸附与停靠条；托盘悬停可看额度摘要，左键切换小岛，关闭主面板后继续采集。" },
+  { icon: Gauge, tone: "bg-green-soft text-green-text", title: "额度、余额与提醒", desc: "按真实接口显示 5 小时、7 天或月窗口与重置时间；API 余额支持状态区分与提醒阈值，缺失额度保留未知。" },
   { icon: FolderSearch, tone: "bg-purple-soft text-purple-text", title: "多平台本机来源采集", desc: "按平台读取本机会话、用量、缓存或积分来源；缺失字段保持未知，不用其他平台的数据猜测补齐。" },
-  { icon: ChartColumn, tone: "bg-accent-soft text-accent", title: "Token 与成本分项统计", desc: "新增输入、输出、缓存创建与缓存命中分开计量，可按日期范围与模型筛选，费用依价目表估算。" },
-  { icon: ScrollText, tone: "bg-amber-soft text-amber", title: "请求日志可追溯", desc: "每次请求的计费模型、思考强度、用时、首字延迟与状态码分页可查，异常请求一眼定位。" },
-  { icon: ShieldCheck, tone: "bg-neutral-soft text-text-primary", title: "数据留在本机", desc: "配置与记录存本地 SQLite，带完整 Schema 迁移；本机凭证只读发现，绝不上传。" },
-  { icon: RefreshCw, tone: "bg-green-soft text-green-text", title: "应用内自更新", desc: "有新版本时标题栏亮起绿色更新按钮，点击即下载安装并自动重启，全程无需手动操作。" },
-  { icon: Plug, tone: "bg-amber-soft text-amber", title: "启用即切换渠道", desc: "点一下「启用」就把连接写入 Claude Code / Codex 配置，切换供应商像切输入法一样简单。" },
+  { icon: ChartColumn, tone: "bg-accent-soft text-accent", title: "统计、趋势与筛选", desc: "今日、本周、本月、累计和自定义日期；新增输入、输出、缓存创建与命中分项统计，趋势图与模型筛选联动。" },
+  { icon: ScrollText, tone: "bg-amber-soft text-amber", title: "请求日志可追溯", desc: "逐条查看模型、思考强度、Token、费用、用时、首字延迟与状态；支持分页、跳页和异常定位。" },
+  { icon: ShieldCheck, tone: "bg-neutral-soft text-text-primary", title: "本地数据可管理", desc: "统计存 SQLite；支持导入去重、按范围导出、预览后清理历史，并保留采集游标避免旧记录回流。" },
+  { icon: RefreshCw, tone: "bg-green-soft text-green-text", title: "桌面偏好与更新", desc: "主题、置顶、勿扰、透明度、大小、刷新间隔和开机启动可调；有新版本可在应用内更新。" },
+  { icon: Plug, tone: "bg-amber-soft text-amber", title: "连接与本地代理", desc: "管理 Auth、API 与编程套餐连接；明确启用后切换 CLI 配置，本地代理可记录网关请求用时与首字。" },
 ]
 
 function Features() {
@@ -190,6 +184,7 @@ function Features() {
     <section className="border-y border-border-base bg-surface-2 px-6 py-[88px]">
       <div className="mx-auto flex max-w-[1240px] flex-col items-center gap-12">
         <SectionHeading title="为什么选 CC Usage" subtitle="一个窗口盯住所有 AI 编程工具的额度与花销，数据全程不出本机。" />
+        <Link to="/docs/features" className="-mt-7 text-[13px] font-semibold text-accent hover:underline">查看完整功能与支持范围 →</Link>
         <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div key={f.title} className="flex flex-col gap-3.5 rounded-card border border-border-base bg-surface p-[26px]">
@@ -208,64 +203,13 @@ function Features() {
 
 const DETAIL_TABS = ["用量趋势", "请求日志", "连接与额度"] as const
 
-/** 「连接与额度」视图：Claude / Codex 额度样例；其他平台不伪造额度数据。 */
-function ConnectionQuotaMock() {
-  const rows: { name: string; icon: LucideIcon; soft: string; fg: string; windows: { tag: string; v: number; reset: string }[] }[] = [
-    {
-      name: "Claude 官方订阅（个人账号）",
-      icon: Sparkles,
-      soft: "bg-accent-soft",
-      fg: "text-logo-claude",
-      windows: CLAUDE_QUOTAS.map((q) => ({ tag: q.key, v: q.usedPercent, reset: q.resetCountdown })),
-    },
-    {
-      name: "Codex 官方订阅（工作账号 · 已过期）",
-      icon: Terminal,
-      soft: "bg-neutral-soft",
-      fg: "text-text-primary",
-      windows: CODEX_QUOTAS.map((q) => ({ tag: q.key, v: q.usedPercent, reset: q.resetCountdown })),
-    },
-  ]
-  return (
-    <div className="flex flex-col gap-4 rounded-card border border-border-base bg-surface p-[18px]">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-[15px] font-bold text-text-primary">各平台额度水位</span>
-        <span className="text-[11px] text-text-muted">按连接 base_url 自动识别 · 只读查询</span>
-      </div>
-      {rows.map((r) => (
-        <div key={r.name} className="flex flex-col gap-2.5 rounded-[10px] border border-border-base p-4">
-          <div className="flex items-center gap-2">
-            <span className={`flex size-6 items-center justify-center rounded-md ${r.soft} ${r.fg}`}>
-              <r.icon size={13} />
-            </span>
-            <span className="text-sm font-semibold text-text-primary">{r.name}</span>
-          </div>
-          <div className="flex flex-wrap gap-x-10 gap-y-2.5">
-            {r.windows.map((w) => (
-              <div key={w.tag} className="flex min-w-[240px] flex-1 items-center gap-2.5">
-                <Chip tone="purple">{w.tag}</Chip>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-track">
-                  <div className="h-full rounded-full bg-green transition-[width] duration-500" style={{ width: `${w.v}%` }} />
-                </div>
-                <span className="tnum w-9 text-right font-mono text-xs font-semibold text-text-primary">{w.v}%</span>
-                <span className="tnum font-mono text-[11px] text-text-muted">{w.reset}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-      <p className="text-xs text-text-muted">额度查询为只读网络请求，仅访问各服务商的公开额度接口；编程套餐接入后在此展示。</p>
-    </div>
-  )
-}
-
 function DetailViews() {
   const [tab, setTab] = useState(0)
   return (
     <section className="flex flex-col items-center gap-10 bg-bg px-6 py-[88px]">
       <SectionHeading
         title="每一笔用量，都能查到底"
-        subtitle="趋势图看走势，请求日志看单次。同一套时间范围与模型筛选，两边同步联动。"
+        subtitle="趋势图看走势，请求日志看单次；桌面端的时间范围与模型筛选可同步联动。下方为独立交互演示。"
       />
       <div className="flex gap-[3px] rounded-[10px] border border-border-base bg-surface-2 p-1">
         {DETAIL_TABS.map((t, i) => (
@@ -284,7 +228,13 @@ function DetailViews() {
         ))}
       </div>
       <div className="flex w-full max-w-[1240px] flex-col gap-5 rounded-card border border-border-base bg-surface-2 p-6">
-        {tab === 0 ? <TrendChartMock /> : tab === 1 ? <RequestLogMock /> : <ConnectionQuotaMock />}
+        {tab === 0 ? (
+          <ActualFrontendFrame key="trend" focus="trend" title="CC Usage 真实趋势图" className="h-[530px] rounded-card bg-surface" />
+        ) : tab === 1 ? (
+          <ActualFrontendFrame key="logs" focus="logs" title="CC Usage 真实请求日志" className="h-[530px] rounded-card bg-surface" />
+        ) : (
+          <ActualFrontendFrame key="quota" focus="quota" title="CC Usage 真实连接与额度" className="h-[530px] rounded-card bg-surface" />
+        )}
       </div>
     </section>
   )
@@ -306,7 +256,7 @@ const TECH_POINTS = [
 ]
 
 const STACK_TAGS = [
-  ["Tauri 2", "Rust", "SQLite", "Windows 10+"],
+  ["Tauri 2", "Rust", "SQLite", "Windows 10+", "macOS", "Linux"],
   ["React 19", "TypeScript", "Vite 6", "Tailwind CSS 4", "shadcn/ui"],
 ]
 
@@ -407,16 +357,16 @@ function Platforms() {
   )
 }
 
-const QUOTA_PROVIDERS: { name: string; type: string; icon: LucideIcon; soft: string; fg: string }[] = [
-  { name: "Claude 官方订阅", type: "官方直连", icon: Sparkles, soft: "bg-accent-soft", fg: "text-logo-claude" },
-  { name: "Codex 官方", type: "官方直连", icon: Terminal, soft: "bg-neutral-soft", fg: "text-text-primary" },
-  { name: "智谱 GLM", type: "个人 / 国际 / 团队", icon: Sparkles, soft: "bg-accent-soft", fg: "text-accent" },
-  { name: "Kimi", type: "编程套餐", icon: Moon, soft: "bg-purple-soft", fg: "text-purple-text" },
-  { name: "MiniMax", type: "编程套餐", icon: Waves, soft: "bg-green-soft", fg: "text-green-text" },
-  { name: "ZenMux", type: "编程套餐", icon: Shuffle, soft: "bg-amber-soft", fg: "text-amber" },
-  { name: "OpenCode Go", type: "编程套餐", icon: Braces, soft: "bg-neutral-soft", fg: "text-text-secondary" },
-  { name: "火山方舟", type: "编程套餐", icon: Flame, soft: "bg-amber-soft", fg: "text-danger" },
-  { name: "Grok", type: "编程套餐", icon: X, soft: "bg-neutral-soft", fg: "text-text-primary" },
+const QUOTA_PROVIDERS: { name: string; type: string; logo: string }[] = [
+  { name: "Claude 官方订阅", type: "官方直连", logo: "claude" },
+  { name: "Codex 官方", type: "官方直连", logo: "codex" },
+  { name: "智谱 GLM", type: "个人 / 国际 / 团队", logo: glmLogo },
+  { name: "Kimi", type: "编程套餐", logo: kimiLogo },
+  { name: "MiniMax", type: "编程套餐", logo: minimaxLogo },
+  { name: "ZenMux", type: "编程套餐", logo: zenmuxLogo },
+  { name: "OpenCode Go", type: "编程套餐", logo: opencodeLogo },
+  { name: "火山方舟", type: "编程套餐", logo: volcLogo },
+  { name: "Grok", type: "编程套餐", logo: "grok" },
 ]
 
 function Providers() {
@@ -430,8 +380,10 @@ function Providers() {
         <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {QUOTA_PROVIDERS.map((p) => (
             <div key={p.name} className="flex items-center gap-3 rounded-card border border-border-base bg-surface px-[18px] py-4">
-              <span className={`flex size-9 items-center justify-center rounded-[9px] ${p.soft} ${p.fg}`}>
-                <p.icon size={17} />
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-[9px] bg-white shadow-sm ring-1 ring-black/5">
+                {p.logo === "claude" || p.logo === "codex" || p.logo === "grok"
+                  ? <PlatformLogo platform={p.logo} size={21} className="text-[#111111]" />
+                  : <img src={p.logo} alt="" aria-hidden="true" className="size-[21px] object-contain" />}
               </span>
               <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
                 <span className="text-sm font-semibold text-text-primary">{p.name}</span>
@@ -449,7 +401,7 @@ function Providers() {
 
 const FAQS = [
   { q: "CC Usage 收费吗？", a: "基于 MIT 协议完全免费开源，可以自由使用、修改和分发，没有付费墙，也没有账号体系。" },
-  { q: "支持哪些系统？", a: "目前面向 Windows 10+，桌面端基于 Tauri 2 构建；macOS 与 Linux 支持在规划中。" },
+  { q: "支持哪些系统？", a: "支持 Windows 10+ x64、macOS（Apple Silicon / Intel）和 Linux x64。下载页提供对应的 EXE、DMG、AppImage 与 DEB 安装包。" },
   { q: "我的数据会上传吗？", a: "不会。会话记录从本机目录增量读取，统计结果存放在本地 SQLite，没有任何上传通道。" },
   { q: "额度数据从哪里来？", a: "按平台真实能力读取：Claude / Codex 使用账号额度接口，Grok 使用本机 OAuth 积分来源；编程套餐按连接的 base_url 识别服务商。没有可验证额度来源的平台不会显示虚构百分比。" },
   { q: "会影响这些 AI 工具使用吗？", a: "本机会话与用量采集均为只读，不修改第三方数据、不拦截请求。只有明确点击「启用」时，才会对已支持外部切换的平台写入配置并先行备份。" },
@@ -493,7 +445,7 @@ function Faq() {
 }
 
 const STEPS = [
-  { num: "01", icon: Download, title: "下载安装", desc: "从 GitHub Releases 获取安装包，中文向导一路下一步，装完即用。" },
+  { num: "01", icon: Download, title: "下载安装", desc: "从 GitHub Releases 选择对应系统的安装包，按提示安装后启动。" },
   { num: "02", icon: KeyRound, title: "添加连接", desc: "一键读取本机凭证，或从 GLM / Kimi / DeepSeek 等供应商预设快速填入服务地址。" },
   { num: "03", icon: Pin, title: "常驻盯额度", desc: "开启灵动岛，额度水位常驻桌面角落，双击即看明细。" },
 ]
@@ -539,7 +491,7 @@ function Cta() {
       </div>
       <div className="flex flex-wrap items-center justify-center gap-[18px] text-[13px] text-text-muted">
         {[
-          { icon: Monitor, label: "支持 Windows 10+" },
+          { icon: Monitor, label: "支持 Windows 10+、macOS、Linux" },
           { icon: Scale, label: "MIT 开源免费" },
           { icon: Database, label: "数据不出本机" },
         ].map((m) => (

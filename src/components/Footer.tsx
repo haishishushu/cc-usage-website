@@ -3,13 +3,13 @@ import { MonitorCheck, ShieldCheck } from "lucide-react"
 import { AppLogo } from "@/components/Logo"
 import { REPO_URL } from "@/lib/version"
 
-const LINK_GROUPS: { title: string; links: { label: string; to: string; external?: boolean }[] }[] = [
+const LINK_GROUPS: { title: string; links: { label: string; to: string; external?: boolean; anchor?: string }[] }[] = [
   {
     title: "产品",
     links: [
-      { label: "功能特性", to: "/" },
+      { label: "功能特性", to: "/docs/features" },
       { label: "免费下载", to: "/download" },
-      { label: "常见问题", to: "/#faq" },
+      { label: "常见问题", to: "/", anchor: "faq" },
     ],
   },
   {
@@ -53,7 +53,7 @@ export function Footer() {
             </p>
             <div className="flex gap-2">
               {[
-                { icon: MonitorCheck, label: "Windows 10+" },
+                { icon: MonitorCheck, label: "Windows · macOS · Linux" },
                 { icon: ShieldCheck, label: "本地存储" },
               ].map((b) => (
                 <span
@@ -85,6 +85,7 @@ export function Footer() {
                     <Link
                       key={link.label}
                       to={link.to}
+                      onClick={link.anchor ? () => window.setTimeout(() => document.getElementById(link.anchor!)?.scrollIntoView({ behavior: "smooth" }), 0) : undefined}
                       className="text-[13px] text-text-secondary transition-colors hover:text-text-primary"
                     >
                       {link.label}

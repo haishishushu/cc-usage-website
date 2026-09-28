@@ -8,9 +8,9 @@ import {
   CLAUDE_QUOTAS,
   CODEX_QUOTAS,
   CONNECTIONS,
-  DEMO_BREAKDOWN,
   DEMO_MODELS,
   TOKEN_SUMMARIES,
+  demoBreakdownForPeriod,
   type Platform,
 } from "@/mock/data"
 
@@ -38,7 +38,7 @@ function Switch({ on, onToggle, label }: { on: boolean; onToggle: () => void; la
   )
 }
 
-function QuotaWindow({ tag, windowName, usedText, v, reset }: { tag: string; windowName: string; usedText: string | null; v: number; reset: string }) {
+function QuotaWindow({ tag, windowName, usedText, v, reset, stale = false }: { tag: string; windowName: string; usedText: string | null; v: number; reset: string; stale?: boolean }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
@@ -47,16 +47,16 @@ function QuotaWindow({ tag, windowName, usedText, v, reset }: { tag: string; win
           <span className="text-[13px] text-text-secondary">{windowName}</span>
         </div>
         <div className="flex items-center gap-2.5">
-          <Chip tone="green">正常</Chip>
+          <Chip tone={stale ? "amber" : "green"}>{stale ? "历史" : "正常"}</Chip>
           <Pulse value={`${v}%`} className="tnum font-mono text-[13px] font-bold text-text-primary" />
         </div>
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-track">
-        <div className="motion-quota-bar h-full rounded-full bg-green" style={{ width: `${v}%` }} />
+        <div className={cn("motion-quota-bar h-full rounded-full", stale ? "bg-amber" : "bg-green")} style={{ width: `${v}%` }} />
       </div>
       <div className="flex justify-between text-[11px] text-text-muted">
         <span className="tnum">{usedText ?? "—"}</span>
-        <span className="tnum">重置倒计时 {reset}</span>
+        <span className="tnum">{stale ? "上次查询剩余" : "重置倒计时"} {reset}</span>
       </div>
     </div>
   )
@@ -80,12 +80,14 @@ export function PanelMock({ className }: { className?: string }) {
   const [appearance, setAppearance] = useState<"跟随系统" | "浅色" | "深色">("跟随系统")
 
   const isClaude = platform === "claude"
+  const breakdown = demoBreakdownForPeriod(rangeIdx)
   const currentPlatform = platformConfig(platform)
   const windows = isClaude ? CLAUDE_QUOTAS : CODEX_QUOTAS
   // 平台下的真实连接（c1/c2 为 Claude，c3 为 Codex）
   const conns = CONNECTIONS.filter((c) => c.platform === platform)
   const [connId, setConnId] = useState<string>("c1")
   const connection = conns.find((c) => c.id === connId) ?? conns[0]
+  const isSubscription = connection?.kind === "auth"
 
   const refresh = () => {
     if (busy.current) return
@@ -116,8 +118,8 @@ export function PanelMock({ className }: { className?: string }) {
       </div>
 
       {/* 工具栏 */}
-      <div className="flex h-[58px] items-center justify-between border-b border-border-base px-6">
-        <div className="flex gap-0.5 rounded-btn border border-border-base bg-surface-2 p-[3px]">
+      <div className="flex min-h-[58px] min-w-0 flex-col gap-2 border-b border-border-base px-3 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0 sm:px-6">
+        <div className="flex shrink-0 gap-0.5 self-start rounded-btn border border-border-base bg-surface-2 p-[3px]">
           {(
             [
               ["overview", "总览"],
@@ -137,7 +139,7 @@ export function PanelMock({ className }: { className?: string }) {
             </button>
           ))}
         </div>
-        <div className="flex max-w-[72%] flex-wrap items-center justify-end gap-x-1 gap-y-0.5">
+        <div className="flex w-full min-w-0 items-center gap-1 overflow-x-auto sm:max-w-[72%] sm:justify-end">
           {PLATFORMS.map((item) => (
             <button
               key={item.id}
@@ -149,7 +151,7 @@ export function PanelMock({ className }: { className?: string }) {
               }}
               aria-pressed={platform === item.id}
               className={cn(
-                "flex h-8 items-center gap-1.5 border-b-2 px-2 text-[11px] transition-colors",
+                "flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-2 text-[11px] transition-colors",
                 platform === item.id
                   ? "border-accent font-semibold text-accent"
                   : "border-transparent text-text-secondary hover:text-text-primary",
@@ -226,8 +228,8 @@ export function PanelMock({ className }: { className?: string }) {
             ) : null}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-[15px] font-bold text-text-primary">{currentPlatform.name} 官方订阅</span>
-                <Chip tone="neutral">Auth</Chip>
+              <span className="text-[15px] font-bold text-text-primary">{isSubscription ? `${currentPlatform.name} 官方订阅` : `${currentPlatform.name} API 连接`}</span>
+                <Chip tone="neutral">{isSubscription ? "Auth" : "API"}</Chip>
                 {connection.status === "expired" ? (
                   <Chip tone="amber">
                     <span className="size-[5px] rounded-full bg-amber" />
@@ -236,7 +238,7 @@ export function PanelMock({ className }: { className?: string }) {
                 ) : null}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[11px] text-text-muted">额度来源: 账号额度接口</span>
+                <span className="text-[11px] text-text-muted">{isSubscription ? "额度来源: 账号额度接口" : "额度来源: API Key 不提供订阅窗口"}</span>
                 <button
                   type="button"
                   onClick={refresh}
@@ -247,9 +249,19 @@ export function PanelMock({ className }: { className?: string }) {
                 </button>
               </div>
             </div>
-            {windows.map((w) => (
-              <QuotaWindow key={w.key} tag={w.key} windowName={w.windowName} usedText={w.usedText} v={w.usedPercent} reset={w.resetCountdown} />
-            ))}
+            {isSubscription ? (
+              <>
+                {connection.status === "expired" ? <p className="text-xs text-amber">连接已过期，下方是上次成功查询的演示快照；重新授权后才会刷新。</p> : null}
+                {windows.map((w) => (
+                  <QuotaWindow key={w.key} tag={w.key} windowName={w.windowName} usedText={w.usedText} v={w.usedPercent} reset={w.resetCountdown} stale={connection.status === "expired"} />
+                ))}
+              </>
+            ) : (
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] bg-surface-2 px-4 py-3 text-[13px]">
+                <span className="font-semibold text-text-primary">API 余额</span>
+                <span className="text-text-secondary">当前示例连接未提供可验证的余额接口 · 显示为 —</span>
+              </div>
+            )}
           </div>
 
           {/* 本地 Token 统计 */}
@@ -297,16 +309,16 @@ export function PanelMock({ className }: { className?: string }) {
                         </svg>
                       </span>
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-xs text-text-secondary">真实消耗 Token</span>
-                        <span className="tnum font-mono text-3xl font-bold tracking-tight text-text-primary">{DEMO_BREAKDOWN.real_total.toLocaleString("en-US")}</span>
+                        <span className="text-xs text-text-secondary">{TOKEN_SUMMARIES[rangeIdx].label}真实消耗 Token</span>
+                        <span className="tnum font-mono text-3xl font-bold tracking-tight text-text-primary">{breakdown.real_total.toLocaleString("en-US")}</span>
                       </div>
-                      <span className="tnum rounded-md bg-green-soft px-2 py-1 text-[11px] text-green-text">≈ 94.90M</span>
+                      <span className="tnum rounded-md bg-green-soft px-2 py-1 text-[11px] text-green-text">≈ {(breakdown.real_total / 1_000_000).toFixed(2)}M</span>
                     </div>
                     <div className="flex rounded-[10px] border border-border-base bg-surface-2">
                       {[
-                        { label: "请求数", value: String(DEMO_BREAKDOWN.requests) },
-                        { label: "平均每次", value: fmtK(DEMO_BREAKDOWN.avg_per_request) },
-                        { label: "估算费用", value: "—" },
+                        { label: "请求数", value: breakdown.requests.toLocaleString("en-US") },
+                        { label: "平均每次", value: fmtK(breakdown.avg_per_request) },
+                        { label: "估算费用", value: `$${breakdown.estimated_cost.toFixed(2)}` },
                       ].map((s) => (
                         <div key={s.label} className="flex flex-col items-center gap-[3px] px-4 py-2.5">
                           <span className="text-[11px] text-text-muted">{s.label}</span>
@@ -322,16 +334,16 @@ export function PanelMock({ className }: { className?: string }) {
                           <span className="size-1.5 rounded-full" style={{ background: b.color }} />
                           <span className="text-xs text-text-secondary">{b.label}</span>
                         </div>
-                        <span className="tnum font-mono text-base font-semibold text-text-primary">{fmtK(DEMO_BREAKDOWN[b.key])}</span>
+                        <span className="tnum font-mono text-base font-semibold text-text-primary">{fmtK(breakdown[b.key])}</span>
                       </div>
                     ))}
                     <div className="flex min-w-[180px] flex-1 flex-col gap-2 rounded-[10px] border border-border-base bg-surface-2 p-3">
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-text-secondary">缓存命中率</span>
-                        <span className="tnum font-mono text-[13px] font-bold text-text-primary">{(DEMO_BREAKDOWN.cache_hit_rate * 100).toFixed(1)}%</span>
+                        <span className="tnum font-mono text-[13px] font-bold text-text-primary">{(breakdown.cache_hit_rate * 100).toFixed(1)}%</span>
                       </div>
                       <div className="h-1.5 w-full overflow-hidden rounded-full bg-track">
-                        <div className="h-full rounded-full bg-green transition-[width] duration-500" style={{ width: `${DEMO_BREAKDOWN.cache_hit_rate * 100}%` }} />
+                        <div className="h-full rounded-full bg-green transition-[width] duration-500" style={{ width: `${breakdown.cache_hit_rate * 100}%` }} />
                       </div>
                     </div>
                   </div>
@@ -425,15 +437,16 @@ export function PanelMock({ className }: { className?: string }) {
           <div className="flex items-center justify-between rounded-card border border-border-base bg-surface p-4">
             <div className="flex flex-col gap-0.5">
               <span className="text-sm font-semibold text-text-primary">刷新间隔</span>
-              <span className="text-xs text-text-muted">额度与 Token 统计的自动刷新频率</span>
+              <span className="text-xs text-text-muted">桌面端可选 1 / 5 / 15 / 30 分钟</span>
             </div>
-            <select className="rounded-btn border border-border-base bg-surface-2 px-3 py-1.5 text-xs text-text-primary" defaultValue="30s">
-              <option value="15s">15 秒</option>
-              <option value="30s">30 秒</option>
+            <select className="rounded-btn border border-border-base bg-surface-2 px-3 py-1.5 text-xs text-text-primary" defaultValue="5m">
               <option value="1m">1 分钟</option>
+              <option value="5m">5 分钟</option>
+              <option value="15m">15 分钟</option>
+              <option value="30m">30 分钟</option>
             </select>
           </div>
-          <p className="text-center text-xs text-text-muted">以上为界面演示，设置项以桌面端实际功能为准。</p>
+          <p className="text-center text-xs leading-[1.8] text-text-muted">更多设置：灵动岛置顶、透明度与大小、代理、连接管理、数据导入导出及历史清理。以上为界面演示。</p>
         </div>
       )}
     </div>

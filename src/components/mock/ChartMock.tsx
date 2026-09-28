@@ -13,7 +13,7 @@ const fmtValue = (v: number) => (v >= 1_000_000 ? `${(v / 1_000_000).toFixed(2)}
 const fmtCost = (v: number) => `$${v.toFixed(2)}`
 
 /** 未知值（null）断线：按段拆分 path */
-function toSegmentedLine(values: Array<number | null>) {
+function toSegmentedLine(values: Array<number | null>, maxValue: number) {
   const stepX = W / (values.length - 1)
   const segs: string[] = []
   let current = ""
@@ -24,7 +24,7 @@ function toSegmentedLine(values: Array<number | null>) {
       return
     }
     const x = Math.round(i * stepX * 10) / 10
-    const y = Math.round((H - v) * 10) / 10
+    const y = Math.round((H - (v / maxValue) * H) * 10) / 10
     current += `${current ? " L" : "M"}${x},${y}`
   })
   if (current) segs.push(current)
@@ -80,8 +80,8 @@ export function TrendChartMock() {
   const toggle = (key: string) => setVisible((v) => ({ ...v, [key]: !v[key] }))
   const anyVisible = DEMO_TREND.series.some((s) => visible[s.key])
 
-  const maxToken = Math.max(...DEMO_TREND.series.map((s) => Math.max(...(s.values as number[]).filter((v): v is number => v !== null))))
-  const maxCost = Math.max(...DEMO_TREND.cost.filter((v): v is number => v !== null))
+  const maxToken = Math.ceil(Math.max(...DEMO_TREND.series.flatMap((s) => s.values.filter((v): v is number => v !== null))) / 100_000) * 100_000
+  const maxCost = Math.ceil(Math.max(...DEMO_TREND.cost.filter((v): v is number => v !== null)) * 10) / 10
   const tokenTicks = [maxToken, (maxToken * 2) / 3, maxToken / 3, 0]
   const costTicks = [maxCost, (maxCost * 2) / 3, maxCost / 3, 0]
   const tickFmt = (v: number) => (v === 0 ? "0" : v >= 1_000_000 ? `${(v / 1_000_000).toFixed(2)}M` : `${Math.round(v / 1_000)}K`)
@@ -97,7 +97,7 @@ export function TrendChartMock() {
     <div className="flex flex-col gap-3.5 rounded-card border border-border-base bg-surface p-[18px]">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-[15px] font-bold text-text-primary">Claude Token 趋势图</span>
-        <span className="text-[11px] text-text-muted">分组粒度 {DEMO_TREND.bucket} · 点击图例显隐 · 悬停查看数值</span>
+        <span className="text-[11px] text-text-muted">模拟数据 · 分组粒度 {DEMO_TREND.bucket} · 点击图例显隐 · 悬停查看数值</span>
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {DEMO_TREND.series.map((s) => (
@@ -124,7 +124,7 @@ export function TrendChartMock() {
           <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden>
             {visible.cache_read ? (
               <>
-                {toSegmentedLine(DEMO_TREND.series[3].values).map((seg, i) => (
+                {toSegmentedLine(DEMO_TREND.series[3].values, maxToken).map((seg, i) => (
                   <path key={i} d={`${seg} L${W},${H} L0,${H} Z`} fill="rgb(5 150 105 / 0.12)" />
                 ))}
               </>
@@ -133,7 +133,7 @@ export function TrendChartMock() {
               (s, si) =>
                 visible[s.key] ? (
                   <g key={s.key}>
-                    {toSegmentedLine(s.values).map((seg, i) => (
+                    {toSegmentedLine(s.values, maxToken).map((seg, i) => (
                       <path
                         key={i}
                         d={seg}
@@ -151,11 +151,15 @@ export function TrendChartMock() {
           {hover !== null && anyVisible ? (
             <HoverLayer
               hover={hover}
-              entries={DEMO_TREND.series.filter((s) => visible[s.key]).map((s) => ({
-                label: s.label,
-                colorVar: s.colorVar,
-                text: s.values[hover] === null ? "—" : fmtValue(s.values[hover] as number),
-              }))}
+              entries={[
+                ...DEMO_TREND.series.filter((s) => visible[s.key]).map((s) => ({
+                  label: s.label,
+                  colorVar: s.colorVar,
+                  text: s.values[hover] === null ? "—" : fmtValue(s.values[hover] as number),
+                })),
+                { label: "估算成本", colorVar: "--chart-cost", text: DEMO_TREND.cost[hover] === null ? "—" : `$${DEMO_TREND.cost[hover]?.toFixed(2)}` },
+              ]}
+              maxToken={maxToken}
               title={hover === null ? "" : `${HOURS(hover)}`}
             />
           ) : null}
@@ -178,7 +182,7 @@ export function TrendChartMock() {
             ))}
           </div>
           <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden style={{ height: 64 }}>
-            {toSegmentedLine(DEMO_TREND.cost).map((seg, i) => (
+            {toSegmentedLine(DEMO_TREND.cost, maxCost).map((seg, i) => (
               <path key={i} d={seg} fill="none" stroke="var(--chart-cost)" strokeWidth="1.5" strokeDasharray="5 4" />
             ))}
           </svg>
@@ -207,16 +211,18 @@ function HoverLayer({
   hover,
   entries,
   title,
+  maxToken,
 }: {
   hover: number
   entries: { label: string; colorVar: string; text: string }[]
   title: string
+  maxToken: number
 }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-10" aria-hidden>
       <div className="absolute top-0 h-full w-px bg-border-strong" style={{ left: `${(hover / 23) * 100}%` }} />
       {entries.map((e) => (
-        <HoverDot key={e.label} hover={hover} colorVar={e.colorVar} />
+        <HoverDot key={e.label} hover={hover} colorVar={e.colorVar} maxToken={maxToken} />
       ))}
       <div
         className="absolute top-1 min-w-[160px] rounded-lg border border-border-base bg-surface px-3 py-2 text-left shadow-card"
@@ -237,7 +243,7 @@ function HoverLayer({
   )
 }
 
-function HoverDot({ hover, colorVar }: { hover: number; colorVar: string }) {
+function HoverDot({ hover, colorVar, maxToken }: { hover: number; colorVar: string; maxToken: number }) {
   const key = DEMO_TREND.series.find((s) => s.colorVar === colorVar)
   if (!key) return null
   const v = key.values[hover]
@@ -245,7 +251,7 @@ function HoverDot({ hover, colorVar }: { hover: number; colorVar: string }) {
   return (
     <span
       className="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface"
-      style={{ left: `${(hover / 23) * 100}%`, top: `${((H - v) / H) * 100}%`, background: `var(${colorVar})` }}
+      style={{ left: `${(hover / 23) * 100}%`, top: `${(1 - v / maxToken) * 100}%`, background: `var(${colorVar})` }}
     />
   )
 }
@@ -270,7 +276,7 @@ export function RequestLogMock() {
     <div className="flex flex-col gap-3.5 rounded-card border border-border-base bg-surface p-[18px]">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-[15px] font-bold text-text-primary">Claude 请求日志</span>
-        <span className="text-[11px] text-text-muted">来源: 本地会话记录 · 支持自定义时间范围与模型筛选 · 点击行查看详情</span>
+        <span className="text-[11px] text-text-muted">模拟日志 · 桌面端支持自定义时间范围与模型筛选 · 点击行查看详情</span>
       </div>
 
       <div className="flex items-center justify-between">

@@ -25,6 +25,12 @@ jobs:
       - name: 检出源码
         uses: actions/checkout@v4
 
+      - name: 检出桌面端真实前端
+        uses: actions/checkout@v4
+        with:
+          repository: haishishushu/cc-usage
+          path: cc-usage-source
+
       - name: 安装 pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -37,9 +43,13 @@ jobs:
           cache: pnpm
 
       - name: 安装依赖
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir cc-usage-source/frontend install --frozen-lockfile
 
       - name: 测试并构建
+        env:
+          CC_USAGE_FRONTEND_DIR: ${{ github.workspace }}/cc-usage-source/frontend
         run: |
           pnpm test
           pnpm build

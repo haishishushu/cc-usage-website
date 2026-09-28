@@ -20,7 +20,7 @@ function InstallSteps() {
   const steps = [
     { title: "选择安装包", desc: "按你的操作系统与处理器架构，直接从 GitHub Releases 下载。" },
     { title: "运行安装包", desc: "Windows 运行 EXE，macOS 打开 DMG，Linux 使用 AppImage 或 DEB。" },
-    { title: "启动 CC Usage", desc: "从开始菜单或桌面启动，主面板与灵动岛即刻就位。" },
+    { title: "启动 CC Usage", desc: "从系统应用列表启动，主面板与灵动岛即刻就位。" },
   ]
   return (
     <section className="flex flex-col items-center gap-7 bg-bg px-6 pb-10 pt-[72px]">
@@ -112,7 +112,7 @@ function Globe2() {
 }
 
 export default function DownloadPage() {
-  usePageTitle("下载 CC Usage — Windows 安装包免费下载（MIT 开源）")
+  usePageTitle("下载 CC Usage — Windows、macOS、Linux 安装包免费下载（MIT 开源）")
   const release = useLatestRelease()
   const urls = downloadUrls(release)
   return (
