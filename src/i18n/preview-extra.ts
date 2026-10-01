@@ -4,7 +4,7 @@ export const PREVIEW_EXTRA_EN: Record<string, string> = {
   "Auth 与 API Key 由 CC Switch 管理；此处读取已应用到本机 Claude 的配置，负责启用、断开、编辑与移除。": "CC Switch manages Auth and API keys. Here you can use the configuration applied to local Claude, and enable, disconnect, edit, or remove connections.",
   "Claude 还没有任何连接": "No Claude connections yet",
   "请先在 CC Switch 中配置，再点击「添加 Claude 连接」选择类型。": "Configure it in CC Switch first, then select a type under Add Claude connection.",
-  "同时仅使用一个灵动岛连接（跨平台唯一）。当前使用中：": "Only one island connection can be active across platforms. Currently active:",
+  "灵动岛本体同时仅使用一个连接（跨平台唯一），分身可在右键菜单各自选择。当前本体使用中：": "The primary island uses one connection across platforms; clones pick their own from the right-click menu. Primary island currently using:",
   "无": "None",
   "断开保留配置、凭证与历史；本机 Token 和积分按平台汇总，无法区分具体账号或 Key；WorkBuddy 已上报积分不是剩余额度。点击「检测」会重新查询当前行的额度与用量。": "Disconnecting retains settings, credentials, and history. Local tokens and credits are grouped by platform, not by account or key. Workbuddy's reported credits are not a remaining balance. Check refreshes quota and usage for that row.",
   "仅智谱团队版与火山方舟套餐需要在此填写辅助凭证；智谱个人版、Kimi、MiniMax、ZenMux、 OpenCode Go 按连接的服务地址自动识别，无需任何配置。": "Only Zhipu team plans and Volcengine Ark need additional credentials here. Zhipu personal plans, Kimi, MiniMax, ZenMux, and OpenCode Go are identified from the connection address.",

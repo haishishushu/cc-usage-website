@@ -1,4 +1,9 @@
 export const CHANGELOG_EN: Record<string, string> = {
+  "灵动岛分身": "Island clones", "开发中": "In development",
+  "右键灵动岛即可开启或销毁分身，同时盯多个连接。": "Right-click the island to open or close clones and watch several connections at once.",
+  "灵动岛右键菜单新增「开启分身」「销毁分身」；至少保留一个灵动岛，菜单右上角以纯数字显示当前灵动岛总数。": "The island's right-click menu gains Open clone and Close clone. At least one island always remains, and the menu's top-right corner shows the current island count.",
+  "每个分身各自选择连接、独立停靠与定位，重启后原样恢复；置顶、透明度与显示开关对所有岛同时生效。": "Each clone picks its own connection, docks and moves independently, and is restored after a restart. Always on top, opacity, and visibility apply to every island.",
+  "销毁本体时由第一个分身接任；托盘摘要与主面板默认连接继续跟随本体。": "Closing the primary island promotes the first clone; the tray summary and the dashboard's default connection keep following the primary island.",
   "修复更新或重启后灵动岛未恢复上次连接的问题。": "Fixed the island failing to restore the previously selected connection after an update or restart.",
   "读取旧版本设置时，缺失字段单独补充默认值，保留已保存的灵动岛平台、连接和名称。": "When loading settings from an older version, fill in defaults only for missing fields while preserving the saved island platform, connection, and name.",
   "后台数据初始化完成后，自动刷新连接列表与灵动岛设置，恢复上次选择的连接，无需手动重新切换。": "Refresh connections and island settings when background data initialization finishes, restoring the previous selection without manually switching again.",
@@ -57,6 +62,6 @@ export const CHANGELOG_EN: Record<string, string> = {
   "建立主分支持续构建流程，生成多平台安装包并统一发行文件命名。": "Established continuous builds on the main branch with cross-platform installers and consistent asset names.",
   "修复 macOS 透明窗口编译与焦点事件兼容问题。": "Fixed macOS transparent-window compilation and focus-event compatibility.",
   "来源提交": "Source commits", "更新日志 — CC Usage 版本发布记录": "Changelog — CC Usage release history",
-  "更新日志": "Changelog", "正式发行与持续构建的产品变化 · 收录至 2026-09-27": "Stable releases and continuous builds · updated through 2026-09-27",
+  "更新日志": "Changelog", "正式发行与持续构建的产品变化 · 收录至 2026-10-01": "Stable releases and continuous builds · updated through 2026-10-01",
   "查看最新发布": "View latest release",
 }

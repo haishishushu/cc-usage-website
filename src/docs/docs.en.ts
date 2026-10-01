@@ -33,7 +33,7 @@ export const DOCS_EN: Doc[] = [
   ]),
   doc("features", "Get started", "Features and support", "Understand the desktop entry points, data sources, and current limits. Preview figures are examples.", [
     { id: "desktop", title: "Desktop entry points", blocks: [table(["Entry", "Available features"], [
-      ["Desktop island", "Collapse or expand, view the current connection and quota, running sessions and today's tokens, switch connections, snap to edges, dock, and remember position."],
+      ["Desktop island", "Collapse or expand, view the current connection and quota, running sessions and today's tokens, switch connections, snap to edges, dock, and remember position. Open or close clones from the right-click menu; each clone has its own connection and dock position."],
       ["System tray", "Left-click to open the dashboard; right-click for windows, connections, position, and preferences; hover for a quota summary."],
       ["Dashboard", "Switch among eight platforms; inspect connections, subscription quotas, local statistics, trends, logs, and settings. Background collection continues when it closes."],
     ])] },
@@ -121,6 +121,7 @@ export const DOCS_EN: Doc[] = [
         ["Show the island", "On first install it appears near the top center for five seconds, then docks to the top edge. Dragging it during the introduction cancels automatic docking. Later, control visibility in Settings → Island or the tray menu."],
         ["Select its platform", "Choose the platform or connection shown by the island in Island settings. This is separate from the platform currently inspected in the dashboard."],
         ["Position it", "Double-click to expand or collapse. Drag it to a screen edge to snap; the dock position is remembered."],
+        ["Open clones", "Right-click the island and choose Open clone to watch several connections at once. Each clone switches its own connection and position from its right-click menu and is restored after a restart. At least one island always remains; the number in the menu's top-right corner is the current island count."],
       ),
       image("island-expanded", "Expanded island showing quota, sessions, and tokens", "The expanded view shows available quota windows, running sessions, and today's tokens. Figures are examples."),
     ] },
@@ -155,6 +156,13 @@ export const DOCS_EN: Doc[] = [
     ] },
     { id: "drag", title: "Drag and snap", blocks: [
       p("Drag from the island's draggable area toward any screen edge to snap. Dock position is remembered. If it disappears, check visibility in Settings → Island and the tray menu, then reset window positions if necessary."),
+    ] },
+    { id: "clones", title: "Right-click menu and clones", blocks: [
+      p("Right-click any island for its menu: open the dashboard, refresh now, switch connection, position, always on top, and Open clone or Close clone. The plain number in the menu's top-right corner is the current island count, including the primary island."),
+      ul("Open clone starts from the connection of the island you right-clicked and places the new island just below and to the right in free mode. Each clone switches its own connection and position from its own menu.",
+        "Close clone removes the island you right-clicked. The item is disabled when only one island is left, so at least one always remains. Closing the primary island promotes the first clone.",
+        "Connection, dock edge, and position are saved per island and restored after a restart. Always on top, opacity and size, do not disturb, and show or hide apply to every island.",
+        "The tray summary, the dashboard's default connection, and Settings → Island follow the primary island only. Up to eight islands are supported."),
     ] },
     { id: "refresh", title: "Refresh feedback", blocks: [
       p("Refreshing updates quota levels and today's usage delta. Choose an auto-refresh interval in Settings → General. Do not disturb pauses delta prompts, quota color alerts, and notifications while collection and statistics continue."),

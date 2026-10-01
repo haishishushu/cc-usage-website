@@ -20,6 +20,17 @@ type ReleaseEntry = {
 
 const RELEASES: ReleaseEntry[] = [
   {
+    title: "灵动岛分身", badge: "开发中", date: "2026-10-01",
+    summary: "右键灵动岛即可开启或销毁分身，同时盯多个连接。",
+    url: `${REPO_URL}/commits/main/`,
+    groups: [{ icon: Sparkles, title: "新功能", tone: "text-text-primary", items: [
+      "灵动岛右键菜单新增「开启分身」「销毁分身」；至少保留一个灵动岛，菜单右上角以纯数字显示当前灵动岛总数。",
+      "每个分身各自选择连接、独立停靠与定位，重启后原样恢复；置顶、透明度与显示开关对所有岛同时生效。",
+      "销毁本体时由第一个分身接任；托盘摘要与主面板默认连接继续跟随本体。",
+    ] }],
+    commits: ["d499c93"],
+  },
+  {
     title: "v0.1.15", badge: "正式版", date: "2026-09-28",
     summary: "修复更新或重启后灵动岛未恢复上次连接的问题。",
     url: `${REPO_URL}/releases/tag/v0.1.15`,
