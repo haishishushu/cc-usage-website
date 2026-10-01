@@ -20,15 +20,60 @@ type ReleaseEntry = {
 
 const RELEASES: ReleaseEntry[] = [
   {
-    title: "灵动岛分身", badge: "开发中", date: "2026-10-01",
+    title: "v0.1.20", badge: "正式版", date: "2026-10-01",
     summary: "右键灵动岛即可开启或销毁分身，同时盯多个连接。",
-    url: `${REPO_URL}/commits/main/`,
-    groups: [{ icon: Sparkles, title: "新功能", tone: "text-text-primary", items: [
-      "灵动岛右键菜单新增「开启分身」「销毁分身」；至少保留一个灵动岛，菜单右上角以纯数字显示当前灵动岛总数。",
-      "每个分身各自选择连接、独立停靠与定位，重启后原样恢复；置顶、透明度与显示开关对所有岛同时生效。",
-      "销毁本体时由第一个分身接任；托盘摘要与主面板默认连接继续跟随本体。",
+    url: `${REPO_URL}/releases/tag/v0.1.20`,
+    groups: [
+      { icon: Sparkles, title: "新功能", tone: "text-text-primary", items: [
+        "灵动岛右键菜单新增「开启分身」「销毁分身」；至少保留一个灵动岛，菜单右上角以纯数字显示当前灵动岛总数。",
+        "每个分身各自选择连接、独立停靠与定位，重启后原样恢复；置顶、透明度与显示开关对所有岛同时生效。",
+        "销毁本体时由第一个分身接任；托盘摘要与主面板默认连接继续跟随本体。",
+      ] },
+      { icon: Wrench, title: "改进与修复", tone: "text-text-secondary", items: [
+        "额度展示的测试期望同步改为「剩余」口径，持续构建恢复通过。",
+      ] },
+    ],
+    commits: ["d499c93", "50a2923"],
+  },
+  {
+    title: "v0.1.19", badge: "正式版", date: "2026-09-29",
+    summary: "额度显示统一为「剩余」口径。",
+    url: `${REPO_URL}/releases/tag/v0.1.19`,
+    groups: [{ icon: Wrench, title: "改进与修复", tone: "text-text-secondary", items: [
+      "灵动岛、停靠条、主面板额度卡片、连接预览与托盘摘要统一显示剩余百分比，水位条长度随剩余额度变短。",
+      "修正 Grok / Zcode 托盘摘要与其他界面口径不一致的问题；告警阈值换算为剩余 25% 与 10%，与原「已用 75% / 90%」完全等价。",
     ] }],
-    commits: ["d499c93"],
+    commits: ["25f426f"],
+  },
+  {
+    title: "v0.1.18", badge: "正式版", date: "2026-09-28",
+    summary: "读写分离并削减采集与界面刷新开销，会话运行期间统计查询与灵动岛不再卡顿。",
+    url: `${REPO_URL}/releases/tag/v0.1.18`,
+    groups: [{ icon: Wrench, title: "改进与修复", tone: "text-text-secondary", items: [
+      "统计、日志与实时快照改走只读连接池，采集写入按文件持锁，查询不再等待采集完成。",
+      "实时推送区分数据变化与心跳续期，总览、费用与积分只在数据变化时刷新；额度、余额与 API 用量按最大缓存年龄刷新，减少重复上游请求。",
+      "本机来源按行增量续读并按戳记跳过未变化文件；灵动岛追数改为叶子订阅，不再整树重渲染。",
+      "字体改为 woff2 子集并预加载，连接切换器按需加载，灵动岛首屏体积明显下降。",
+    ] }],
+    commits: ["a01982a"],
+  },
+  {
+    title: "v0.1.17", badge: "正式版", date: "2026-09-28",
+    summary: "项目介绍顶图替换为灵动岛展示。",
+    url: `${REPO_URL}/releases/tag/v0.1.17`,
+    groups: [{ icon: Wrench, title: "文档更新", tone: "text-text-secondary", items: [
+      "中英文项目介绍的顶图改为灵动岛截图，首屏直接展示核心入口。",
+    ] }],
+    commits: ["cbcf1f9"],
+  },
+  {
+    title: "v0.1.16", badge: "正式版", date: "2026-09-28",
+    summary: "重写中英文使用指南并补齐安装配置与数据说明。",
+    url: `${REPO_URL}/releases/tag/v0.1.16`,
+    groups: [{ icon: Wrench, title: "文档更新", tone: "text-text-secondary", items: [
+      "重写中文使用指南并同步英文版，整理安装配置、首次使用、日常操作、统计口径与数据保留说明。",
+    ] }],
+    commits: ["1cacc2a"],
   },
   {
     title: "v0.1.15", badge: "正式版", date: "2026-09-28",
