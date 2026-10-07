@@ -52,7 +52,7 @@ export const DOCS_EN: Doc[] = [
     ])] },
     { id: "logs", title: "Logs and proxy", blocks: [ul(
       "Request logs include time, billed model, reasoning effort, input and output tokens, estimated cost, duration, first-token latency, and status where trustworthy. Pagination and jump-to-page are available.",
-      "The optional local proxy can time CLI gateway traffic. It restores direct configuration after repeated unavailability. Official subscription traffic does not use this proxy.",
+      "The optional local proxy can time CLI gateway traffic. It restores direct configuration after repeated unavailability. Official subscription traffic does not use this proxy. Proxied API key requests are attributed to their connection by credential fingerprint, and the dashboard can switch its local statistics to that connection only.",
     )] },
     { id: "settings", title: "Settings and data", blocks: [table(["Category", "Controls"], [
       ["Desktop island", "Visibility, always-on-top, size, opacity, do not disturb, dock edge, and refresh feedback."],
@@ -186,9 +186,9 @@ export const DOCS_EN: Doc[] = [
     { id: "platforms", title: "Supported platforms", blocks: [table(["Platform", "Current sources"], [
       ["Claude", "Official subscription, API, local sessions, tokens, cache, and quotas."],
       ["Codex", "Official subscription, API, local sessions, tokens, cache, and quotas."],
-      ["Gemini", "Local Gemini CLI sessions and usage; no claim of an online subscription quota."],
+      ["Gemini", "Local Gemini CLI sessions and usage, including thinking and tool tokens, with cost estimates from the official price list; no claim of an online subscription quota."],
       ["Grok", "Local OAuth credit quota; no claim of local session collection."],
-      ["Zcode", "Local sessions, usage, and cache; account balance is not assumed."],
+      ["Zcode", "Local sessions with done, failed, and running states, usage, cache, and BigModel Coding Plan key quota; account balance is not assumed."],
       ["Trae", "Local source detection and connection management."],
       ["Qoder", "Local sessions, tokens, and credits from domestic or international editions."],
       ["Workbuddy", "Local sessions, usage, cache, and credits."],
